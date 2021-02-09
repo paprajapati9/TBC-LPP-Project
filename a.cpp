@@ -1,7 +1,10 @@
-#include <iostream>
 
+#include<iostream>
 using namespace std;
 
-main(){
-    cout<<"Hello github";
+int main(){
+    cout<<" HELLO Github";
+    cout<<" HAIL TBC";
+    return 0;
+    
 }
