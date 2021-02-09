@@ -23,7 +23,7 @@ int main(){
                reme=0,f=0;
 
 
-  cout<<"Please Enter any positive integer less than 100000 : "<<endl;
+  cout<<"Please Enter any positive integer less than 1,00,000 : "<<endl;
   cin>>a;
 
   b=(a%10000);
