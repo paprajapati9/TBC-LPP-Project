@@ -1,5 +1,7 @@
-# TBC-Project-1
-First TBC Project
-sup
-#include<bits/stdc++.h>
-#include<TBC>
+
+#include <iostream>
+using namespace std;
+int main()
+{
+    cout<<" Helo"<<endl;
+} 
