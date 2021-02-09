@@ -19,10 +19,11 @@ int main(){
 
 
   unsigned int a=0,b=0,c=0,remc{0}
-                   ,d=0,remd{0},e=0,reme{0},f=0;
+               ,d=0,remd{0},e=0,
+               reme=0,f=0;
 
 
-  cout<<"Please Enter an Integer b/w 0 - 32,767 : "<<endl;
+  cout<<"Please Enter any positive integer less than 100000 : "<<endl;
   cin>>a;
 
   b=(a%10000);
