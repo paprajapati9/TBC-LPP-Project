@@ -5,9 +5,8 @@ sup
 #include<TBC>
   
 ## Awesome contributors :star_struck:
-<a href="https://github.com/KRONOS-SSCBS-21/proj-kronos-site/graphs/contributors">
-  <img src="https://contributors-img.web.app/image?repo=KRONOS-SSCBS-21/proj-kronos-site" />
+<a href="https://github.com/TheBroodiesClub/TBC-Project-1/graphs/contributors">
+  <img src="https://contributors-img.web.app/image?repo=TheBroodiesClub/TBC-Project-1/" />
 </a>
 
 Made with [contributors-img](https://contributors-img.web.app).
-test@chinz
