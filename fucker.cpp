@@ -52,6 +52,6 @@ int main(){
    cout <<d<<"   "<<e<<"   "<<f<<endl;
    cout <<e<<"   "<<f<<endl;
    cout <<f<<endl;
-
+// this is how u code.
  return 0;
 }
