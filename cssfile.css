@@ -44,10 +44,18 @@ span.FirstLetter{
     color:yellow;
 }
 
-.FirstLetter:hover{
-    color:black;
-    font-size: 1.6em;
-}
 .brand:hover{
     font-size:160%;
+}
+
+.navbar-nav{
+    margin-left: auto;
+}
+
+.navbar-light .navbar-nav .nav-link{
+    color: white;
+}
+
+.navbar-light .navbar-nav .nav-link:hover{
+    color: white;
 }
