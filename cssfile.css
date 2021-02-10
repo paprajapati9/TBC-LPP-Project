@@ -59,3 +59,11 @@ span.FirstLetter{
 .navbar-light .navbar-nav .nav-link:hover{
     color: white;
 }
+
+button.btn{
+    /* border-color: transparent; */
+    /* background-color: transparent; */
+    padding: 8px 14px;
+    font-size:11px;
+    border-radius:6px;
+}
