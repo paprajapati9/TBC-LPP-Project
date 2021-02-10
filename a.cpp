@@ -1,7 +1,7 @@
 #include <iostream>
-
 using namespace std;
 
-main(){
-    cout<<"Hello github";
+int main(){
+    cout<<"Hello World";
+    cout<<"This is simply nothing\n";
 }
