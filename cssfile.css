@@ -4,27 +4,20 @@ html{
     background-image: url(https://png.pngtree.com/thumb_back/fw800/background/20190826/pngtree-abstract-metallic-blue-black-frame-layout-modern-tech-design-template-image_305020.jpg);
     background-size: cover;
 }
-/* .container{
-    background-color: transparent;
-    background-image: url(https://res.cloudinary.com/practicaldev/image/fetch/s--LEsb8Hva--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://dev-to-uploads.s3.amazonaws.com/i/arasur0jjdbqabgl69xr.png);
-} */
 
 .navbar-expand-lg a{
     color:black;
-    /* background-color:rgba(0, 0, 0, 0.116); */
 }
 
 .dropdown-menu,.nav-item a{
     background-color:transparent;
     color:white;
+    border-color: transparent;
 }
 
 span.nav{
     color:white;
-    font-size:120%;
-    /* font-family: 'Courier New', Courier, monospace; */
-    /* font-size:90%; */
-    
+    font-size:120%;    
 }
 
 .nav:hover{
