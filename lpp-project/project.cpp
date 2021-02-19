@@ -169,6 +169,7 @@ void displayVector(vector <int> dv)
 }
     
 int main(){
+    cout<<" Solver"<<endl;
     Constraint c;
     ObjFunc o;
     o.Insert();
