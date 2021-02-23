@@ -1,22 +1,22 @@
-//  LPP Solver 
+//  LPP Solver
 //solver:
-//2 Var 2 Constraints 
-//Objective function 
+//2 Var 2 Constraints
+//Objective function
 //
-//constraints 
-//feasibility 
+//constraints
+//feasibility
 //Maximisation
-//conversion  
+//conversion
 //Standard form
 
 
 
-//Basic var 
+//Basic var
 //Entering var
 //Leaving var
 //
-//Pivot element,Pivot row 
-//Optimality Condition 
+//Pivot element,Pivot row
+//Optimality Condition
 //Optimal Table
 //
 //Variable value,Optimal solution
@@ -35,7 +35,7 @@
 //if Ci>=0
 //
 //C vector me entering var()
-//getColumn of entering var 
+//getColumn of entering var
 //Exiting var(column of entering var , b vector)
 //
 //Pivot element()
@@ -43,7 +43,13 @@
 //
 //make_entering_var_column_zero();
 //loop end;
-//print solution;                   
+// MAX Z = 2x1 + 3x2
+
+// x1 + 2x2 <= 2
+// 2x2 + x1 <= 3
+
+// x1>=0,  x2>=0
+//print solution;
 
 #include <iostream>
 #include <vector>
@@ -53,11 +59,12 @@ void displayVector(vector <int>);
 class LPP{
     public:
     int enteringVariable {};
+    int leavingVariable {};
     vector <int> indexOfBasic;
     void checkBasic(vector <vector<double>> constraint)
     {
         int BasicInt {},flag {1};
-        
+
         // i will denote the column of the table
         for ( int i = 0; i < constraint[0].size(); i++)
         {
@@ -83,10 +90,29 @@ class LPP{
             if (objRow[i] < objRow[mostNegativeIndex]) mostNegativeIndex = i;
         }
         enteringVariable = mostNegativeIndex;
-    cout<<enteringVariable;
+    cout<<enteringVariable<<endl;
     }
 
-    
+    void leaving_var(vector <double> res, vector <vector<double>>constraint){
+       double ratio;
+       double min_ratio=0;
+       bool flag;
+       double current_var;
+
+       for (int i=0; i<res.size();++i){
+         current_var=constraint[i][enteringVariable];
+         if(current_var>0){
+           ratio=res[i]/current_var;
+           if(min_ratio==0 || ratio<min_ratio){
+               min_ratio=ratio;
+               leavingVariable=i;
+            }
+         }
+
+       }
+        cout<<leavingVariable<<endl;
+    }
+
 };
 class Constraint :public LPP{
     public :
@@ -130,7 +156,7 @@ class Constraint :public LPP{
         }
     }
 
-    
+
 };
 
 class Resource :public LPP{
@@ -147,7 +173,7 @@ class ObjFunc :public LPP{
         objective.push_back(-2);
         objective.push_back(-3);
     }
-    
+
     void SlackSurp(int numConst){
         for(int i=0;i<numConst;i++){
             objective.push_back(0);
@@ -167,11 +193,12 @@ void displayVector(vector <int> dv)
         cout<<dv.at(i)<<endl;
     }
 }
-    
+
 int main(){
     cout<<" Solver"<<endl;
     Constraint c;
     ObjFunc o;
+    Resource r;
     o.Insert();
     // o.display();
     o.SlackSurp(2);
@@ -183,4 +210,5 @@ int main(){
     // c.display();
     c.checkBasic(c.constraints);
     c.checkEnteringVar(o.objective);
+    c.leaving_var(r.reso,c.constraints);
 }
