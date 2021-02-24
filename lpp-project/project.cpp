@@ -195,7 +195,7 @@ void displayVector(vector <int> dv)
 }
 
 int main(){
-    cout<<" Solver"<<endl;
+    cout<<" Solver Project "<<endl;
     Constraint c;
     ObjFunc o;
     Resource r;
