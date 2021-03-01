@@ -115,7 +115,7 @@ class LPP{
 
     bool checkOptimality(vector <double> objective){
         for(int i=0; i<objective.size();i++){
-            if(objective[i]<=0){
+            if(objective[i]<0){
                cout<<"Optimality not reached"<<endl;
                return 0;
             }
@@ -124,47 +124,50 @@ class LPP{
         return 1;
     }
     void newPivotRow(vector <vector<double>> &constraints , vector <double> &reso){
-        cout<<"Entering New Pivot row"<<endl;
         reso[leavingVariable]= reso[leavingVariable]/pivotElement;
-       for(int i=0;i<=constraints[leavingVariable].size();i++)
-       {
-       constraints[leavingVariable][i]=constraints[leavingVariable][i]/pivotElement;
-       }
-       displayVector(constraints[leavingVariable]);
-      
+        for(int i=0;i<=constraints[leavingVariable].size();i++)
+        {
+            constraints[leavingVariable][i]=constraints[leavingVariable][i]/pivotElement;
+        }      
     }
 
     void newRow(vector <vector<double>> &constraints , vector <double> &objective , vector <double> &reso )
     {
-        cout<<"Entering New  Row"<<endl;
         double multFactor=1;
-        multFactor=reso[leavingVariable]*(-1);
+
         for(int j=0;j<reso.size();j++)
         {
             if(j==leavingVariable)
                 continue;
+            multFactor=constraints[j][enteringVariable]*(-1);
             reso[j]=reso[j]+multFactor*reso[leavingVariable];
         }
+
         multFactor=objective[enteringVariable]*(-1);
         optimalSolution=optimalSolution+multFactor*reso[leavingVariable];
-        cout<<optimalSolution<<endl;
+        cout<<optimalSolution<<" ";
+
         displayVector(reso);
-        
-       for(int j=0;j<constraints.size();j++){
-            if(j==leavingVariable)
-                continue;
-            multFactor=constraints[j][enteringVariable]*(-1);
-            for(int i=0;i<constraints[j].size();i++){
-                constraints[j][i]=constraints[j][i]+multFactor*constraints[leavingVariable][i];
-            }
-            displayVector(constraints[j]);
-        }
+
         multFactor=objective[enteringVariable]*(-1);
         for(int j=0;j<objective.size();j++)
         {
             objective[j]=objective[j]+multFactor*constraints[leavingVariable][j];
         }
         displayVector(objective);
+        
+        multFactor=1;
+        for(int j=0;j<constraints.size();j++){
+            if(j==leavingVariable){
+                displayVector(constraints[leavingVariable]);
+                continue;
+            }
+            multFactor=constraints[j][enteringVariable]*(-1);
+            for(int i=0;i<constraints[j].size();i++){
+                constraints[j][i]=constraints[j][i]+multFactor*constraints[leavingVariable][i];
+            }
+            displayVector(constraints[j]);
+        }
     }
     
      
@@ -269,27 +272,27 @@ int main(){
     o.Insert();
     // o.display();
     o.SlackSurp(2);
-    // cout<<"Objective function after converting to Std Form : "<<endl;
-    // o.display();
+    cout<<"Objective function after converting to Std Form : "<<endl;
+    o.display();
     // c.display();
     c.SlackSurp();
-    // cout<<"Constraints after converting to Std Form : "<<endl;
-    // c.display();
+    cout<<"Constraints after converting to Std Form : "<<endl;
+    c.display();
     c.checkBasic(c.constraints);
    
     int a=c.checkOptimality(o.objective);
     
     while(!a){
-    c.checkEnteringVar(o.objective);
-    c.checkleavingVariable(r.reso,c.constraints);
-    c.setPivot(c.constraints);
-    c.newPivotRow(c.constraints, r.reso);
-    c.newRow(c.constraints, o.objective , r.reso);
-    a=c.checkOptimality(o.objective);
-    cout<<endl;
-
+        c.checkEnteringVar(o.objective);
+        c.checkleavingVariable(r.reso,c.constraints);
+        c.setPivot(c.constraints);
+        c.newPivotRow(c.constraints, r.reso);
+        c.newRow(c.constraints, o.objective , r.reso);
+        a = c.checkOptimality(o.objective);
+        cout<<endl;
     }
 
+    cout<<"Optimal Solution is : "<<c.optimalSolution;
 }
 // MAX z= 2x1+3x2
 //  S.to x1+2X2 <= 2
