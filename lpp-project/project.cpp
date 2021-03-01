@@ -53,6 +53,7 @@ void displayVector(vector <int>);
 void displayVector(vector <double>);
 class LPP{
     public:
+    double optimalSolution {};
     int enteringVariable {};
     int leavingVariable {};
     double pivotElement;
@@ -78,7 +79,7 @@ class LPP{
         displayVector(indexOfBasic);
     }
     // we will check for the most negative element in the Z-row
-    void checkEnteringVar(vector <int> objRow)
+    void checkEnteringVar(vector <double> objRow)
     {
         int mostNegativeIndex = 0;
         for (int i = 0 ; i < objRow.size() ; i++)
@@ -112,7 +113,7 @@ class LPP{
             cout<<"pivot  "<<pivotElement<<endl;
          }
 
-    bool checkOptimality(vector <int> objective){
+    bool checkOptimality(vector <double> objective){
         for(int i=0; i<objective.size();i++){
             if(objective[i]<=0){
                cout<<"Optimality not reached"<<endl;
@@ -122,15 +123,34 @@ class LPP{
         cout<<"Optimality reached"<<endl;
         return 1;
     }
-    void newPivotRow(vector <vector<double>> &constraints){
-       for(int i=0;i<=constraints[leavingVariable].size();i++){
+    void newPivotRow(vector <vector<double>> &constraints , vector <double> &reso){
+        cout<<"Entering New Pivot row"<<endl;
+        reso[leavingVariable]= reso[leavingVariable]/pivotElement;
+       for(int i=0;i<=constraints[leavingVariable].size();i++)
+       {
        constraints[leavingVariable][i]=constraints[leavingVariable][i]/pivotElement;
        }
        displayVector(constraints[leavingVariable]);
+      
     }
-    void newRow(vector <vector<double>> &constraints){
+
+    void newRow(vector <vector<double>> &constraints , vector <double> &objective , vector <double> &reso )
+    {
+        cout<<"Entering New  Row"<<endl;
         double multFactor=1;
-        for(int j=0;j<constraints.size();j++){
+        multFactor=reso[leavingVariable]*(-1);
+        for(int j=0;j<reso.size();j++)
+        {
+            if(j==leavingVariable)
+                continue;
+            reso[j]=reso[j]+multFactor*reso[leavingVariable];
+        }
+        multFactor=objective[enteringVariable]*(-1);
+        optimalSolution=optimalSolution+multFactor*reso[leavingVariable];
+        cout<<optimalSolution<<endl;
+        displayVector(reso);
+        
+       for(int j=0;j<constraints.size();j++){
             if(j==leavingVariable)
                 continue;
             multFactor=constraints[j][enteringVariable]*(-1);
@@ -139,8 +159,14 @@ class LPP{
             }
             displayVector(constraints[j]);
         }
-     
+        multFactor=objective[enteringVariable]*(-1);
+        for(int j=0;j<objective.size();j++)
+        {
+            objective[j]=objective[j]+multFactor*constraints[leavingVariable][j];
+        }
+        displayVector(objective);
     }
+    
      
 };
 class Constraint :public LPP{
@@ -198,7 +224,7 @@ class Resource :public LPP{
 
 class ObjFunc :public LPP{
     public:
-    vector<int> objective ;
+    vector<double> objective ;
     void Insert(){
         objective.push_back(-2);
         objective.push_back(-3);
@@ -257,9 +283,10 @@ int main(){
     c.checkEnteringVar(o.objective);
     c.checkleavingVariable(r.reso,c.constraints);
     c.setPivot(c.constraints);
-    c.newPivotRow(c.constraints);
-    c.newRow(c.constraints);
-    a=1;
+    c.newPivotRow(c.constraints, r.reso);
+    c.newRow(c.constraints, o.objective , r.reso);
+    a=c.checkOptimality(o.objective);
+    cout<<endl;
 
     }
 
