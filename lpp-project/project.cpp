@@ -281,6 +281,10 @@ int main(){
     
     while(!a){
     c.checkEnteringVar(o.objective);
+<<<<<<< HEAD
+    c.leaving_var(r.reso,c.constraints);
+}
+=======
     c.checkleavingVariable(r.reso,c.constraints);
     c.setPivot(c.constraints);
     c.newPivotRow(c.constraints, r.reso);
@@ -295,3 +299,4 @@ int main(){
 //  S.to x1+2X2 <= 2
 //       2x2 +x1<=3
 // x1,x2>=0
+>>>>>>> cbcd1a7d8147cc877ec907056264232f2e85b206
