@@ -6,10 +6,11 @@ class Question
 {
 public:
     string Type;
-    vector<string> Constraint_Condition;
-    vector<string> Variable_Feasibility;
     int No_Of_Variable;
     int No_Of_Constraint;
+    int No_Of_Slack_Surplus;
+    vector<string> Constraint_Condition;
+    vector<string> Variable_Feasibility;
     vector<double> Objective_Cofficient;
     vector<vector<double>> Constraint_Cofficient;
     vector<double> Resource;
@@ -21,6 +22,9 @@ public:
     void Display_Objective_Cofficient(void);
     void Display_Constraint_Cofficient(void);
     void Display_Variable_Feasibility(void);
+    void Convert_Objective_Standard_Form(void);
+    void Convert_Constraint_Standard_Form(void);
+    void Display_Variable_Feasibility_After_Standard(void);
 };
 
 void Question ::Selecion()
@@ -100,18 +104,75 @@ void Question::Set_Feasibility()
     }
 }
 
-void Question ::Display_Variable_Feasibility(){
-    cout<<"Feasibility :-\n";
+void Question ::Display_Variable_Feasibility()
+{
+    cout << "Feasibility :-\n";
     for (int i = 0; i < No_Of_Variable; i++)
     {
-        cout<<"x"<<i+1<<" "<<Variable_Feasibility[i]<<", ";
+        cout << "x" << i + 1 << " " << Variable_Feasibility[i] << ", ";
     }
-    
+}
+
+void Question ::Convert_Objective_Standard_Form()
+{
+    if (Type == "min" || Type == "Min")
+    {
+        Type = "Max";
+        for (int i = 0; i < Objective_Cofficient.size(); i++)
+        {
+            Objective_Cofficient[i] = Objective_Cofficient[i] * -1;
+        }
+    }
+
+    No_Of_Slack_Surplus = 0;
+
+    for (int i = 0; i < Constraint_Condition.size(); i++)
+    {
+        if (Constraint_Condition[i] == "<=" || Constraint_Condition[i] == ">=")
+        {
+            Objective_Cofficient.push_back(0);
+            No_Of_Slack_Surplus++;
+            No_Of_Variable++;
+        }
+    }
+}
+
+void Question ::Convert_Constraint_Standard_Form()
+{
+
+    for (int i = 0; i < No_Of_Constraint; i++)
+    {
+        Constraint_Cofficient[i].resize(No_Of_Variable);
+
+        if (Constraint_Condition[i] == "<=")
+        {
+            Constraint_Cofficient[i][No_Of_Variable - No_Of_Slack_Surplus + i] = 1;
+        }
+
+        if (Constraint_Condition[i] == ">=")
+        {
+            Constraint_Cofficient[i][No_Of_Variable - No_Of_Slack_Surplus + i] = -1;
+            for (int j = 0; j < No_Of_Variable; j++)
+            {
+                Constraint_Cofficient[i][j] = Constraint_Cofficient[i][j] * -1;
+                Resource[i] = Resource[i] * -1;
+            }
+        }
+
+        Constraint_Condition[i] = "=";
+    }
+}
+
+void Question::Display_Variable_Feasibility_After_Standard()
+{
+    cout << "Feasibility :\n";
+    cout << "     All variable : >= 0";
 }
 
 int main()
 {
     cout << "********   LPP Solver    ********" << endl;
+    cout << "\n For Simplex method Only (Constraint <= type only )" << endl;
 
     Question f;
     f.Selecion();
@@ -123,4 +184,9 @@ int main()
     f.Display_Constraint_Cofficient();
     f.Display_Variable_Feasibility();
     cout << "\n*******************************************************************************\n\n";
+    f.Convert_Objective_Standard_Form();
+    f.Display_Objective_Cofficient();
+    f.Convert_Constraint_Standard_Form();
+    f.Display_Constraint_Cofficient();
+    f.Display_Variable_Feasibility_After_Standard();
 }
