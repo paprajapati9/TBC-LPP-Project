@@ -152,11 +152,11 @@ void Question ::Convert_Constraint_Standard_Form()
         if (Constraint_Condition[i] == ">=")
         {
             Constraint_Cofficient[i][No_Of_Variable - No_Of_Slack_Surplus + i] = -1;
-            for (int j = 0; j < No_Of_Variable; j++)
-            {
-                Constraint_Cofficient[i][j] = Constraint_Cofficient[i][j] * -1;
-                Resource[i] = Resource[i] * -1;
-            }
+            // for (int j = 0; j < No_Of_Variable; j++)
+            // {
+            //     Constraint_Cofficient[i][j] = Constraint_Cofficient[i][j] * -1;
+            //     Resource[i] = Resource[i] * -1;
+            // }
         }
 
         Constraint_Condition[i] = "=";
@@ -184,9 +184,13 @@ int main()
     f.Display_Constraint_Cofficient();
     f.Display_Variable_Feasibility();
     cout << "\n*******************************************************************************\n\n";
+    cout << "\n\n\n*******************************************************************************\n";
+    cout<<"STANDARD FORM :\n\n";
     f.Convert_Objective_Standard_Form();
     f.Display_Objective_Cofficient();
     f.Convert_Constraint_Standard_Form();
     f.Display_Constraint_Cofficient();
     f.Display_Variable_Feasibility_After_Standard();
+    cout << "\n*******************************************************************************\n\n";
+
 }
