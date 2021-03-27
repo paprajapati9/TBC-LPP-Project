@@ -1,6 +1,3 @@
-# TBC-Project-1
-First TBC Project
-sup
-#include<bits/stdc++.h>
-#include<TBC>
-clone
+# TBC-First-Project
+
+Build a program to solve linear programing question by simplex method
