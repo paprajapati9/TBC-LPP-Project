@@ -178,14 +178,18 @@ class Constraint :public LPP{
     //-1 denotes<= condition ,
     // 0 denotes = condition ,
     // 1 denotes >= condition
-    vector <int> constype{-1,-1}; //type of constraints
+    vector <int> constype{-1,-1}; //type of constraints ,have to determine consttype from the user input
 
-    void display(){
+    void display(vector <double> res){
+
         for (int i = 0; i < constraints.size(); ++i)
         {
             for (int j = 0; j < constraints[i].size(); ++j)
             {
-                cout<<constraints[i][j]<<" ";
+                if(j<(constraints[i].size()-1))
+                    cout<<constraints[i][j]<<"x"<<j+1<<" + ";
+                else
+                    cout<<constraints[i][j]<<"x"<<j+1<<" = "<<res[i];
             }
             cout<<"\n";
         }
@@ -228,7 +232,7 @@ class Resource :public LPP{
 class ObjFunc :public LPP{
     public:
     vector<double> objective ;
-    void Insert(){
+    void Insert(){//Have to take objective function values from user 
         objective.push_back(-2);
         objective.push_back(-3);
     }
@@ -239,8 +243,17 @@ class ObjFunc :public LPP{
         }
     }
     void display(){
-        for(int j=0;j<objective.size();j++)
-        cout<<"OBJECTIVE FUNCTION : "<<objective[j]*(-1)<<endl;
+        cout<<"OBJECTIVE FUNCTION (Z) = ";
+        for(int j=0;j<objective.size();j++){
+            int coeff=(objective[j]!=0) ? (objective[j]*(-1)) : 0;
+            if(j<(objective.size()-1)){
+                cout<<coeff<<"x"<<j+1<<" + ";
+            }
+            else{
+                cout<<coeff<<"x"<<j+1;
+            }
+        }
+        cout<<endl;
         // the objective function to be displayed should be in positive form thus we are multiplying by -1
     }
 };
@@ -271,13 +284,13 @@ int main(){
     Resource r;
     o.Insert();
     // o.display();
-    o.SlackSurp(2);
+    o.SlackSurp(2);//Find out how many slack/surplus var. to be added in ObjFunc 
     cout<<"Objective function after converting to Std Form : "<<endl;
     o.display();
     // c.display();
     c.SlackSurp();
     cout<<"Constraints after converting to Std Form : "<<endl;
-    c.display();
+    c.display(r.reso);
     c.checkBasic(c.constraints);
    
     int a=c.checkOptimality(o.objective);
