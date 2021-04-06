@@ -76,7 +76,7 @@ class LPP{
             if (flag && (BasicInt==1))
                 indexOfBasic.push_back(i);
         }
-        displayVector(indexOfBasic);
+      //  displayVector(indexOfBasic);
     }
     // we will check for the most negative element in the Z-row
     void checkEnteringVar(vector <double> objRow)
@@ -92,21 +92,20 @@ class LPP{
     }
 
     void checkleavingVariable(vector <double> res,vector <vector<double>> constraint){
-    	double min_ratio=0;
-    	double  ratio;
-    	double currentvar;
-    	for(int i=0;i<res.size();i++){
-    	  currentvar=constraint[i][enteringVariable];
-		  if(currentvar>0)	{
-		  	ratio=res[i]/currentvar;
-		  	if(min_ratio==0 || ratio<min_ratio){
-		  	min_ratio=ratio;
-		  	leavingVariable=i;
-		  }
-		  }
-		  
+    	double min_ratio=0;//declaring and initialisation var to store minimum ratio
+        double  ratio;//a variable which will store all ratios 
+    	double currentvar;//to calculate the ratios we have to select particular entries of the rows ,so we need this variable to store index of  the same.
+    	for(int i=0;i<res.size();i++){//initialising a for-loop from zero to size of resource vector
+    	    currentvar=constraint[i][enteringVariable];//value of currentvar will be i'th term of constraint's row in the enteringVar column
+            if(currentvar>0)	{//only elements which are >=0 will be considered for min ratio
+            	ratio=res[i]/currentvar;//to find ratios we are dividing resource column with currentvar 
+            	if(min_ratio==0 || ratio<min_ratio){//condition for the least of the ratio obtained
+                	min_ratio=ratio;// assigning min_ratio the value of least of the ratios obtained
+                	leavingVariable=i;//the value of i for which we will get min ratio we be assigned to leavingVar for further calc's
+                }
+		    }
 		}
-		cout<<leavingVariable<<endl;
+		cout<<"Leaving variable is: x"<<indexOfBasic[leavingVariable]+1<<endl;//printing leaving variable. 
 	}
     void setPivot( vector <vector<double>> constraints ){
             pivotElement=constraints[leavingVariable][enteringVariable];
@@ -282,6 +281,7 @@ int main(){
     Constraint c;
     ObjFunc o;
     Resource r;
+    LPP l;
     o.Insert();
     // o.display();
     o.SlackSurp(2);//Find out how many slack/surplus var. to be added in ObjFunc 
