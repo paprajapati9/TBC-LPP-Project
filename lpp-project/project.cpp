@@ -51,7 +51,8 @@ using namespace std;
 
 void displayVector(vector <int>);
 void displayVector(vector <double>);
-class LPP{
+class LPP
+{
     public:
     double optimalSolution {}; //stores optimal solution at each simplex table
     int enteringVariable {}; //stores index of the entering variable in indexOfBasic vector
@@ -92,6 +93,7 @@ class LPP{
      * @param problemType: Min or Max type of problem, 0 for min, 1 for max.
      * By default problem type is 1 that is maximizarion problem. 
      */
+
     void checkEnteringVar(vector <double> objRow, int problemType=1)
     {
         int enteringVarIndex = 0;
@@ -109,18 +111,31 @@ class LPP{
         enteringVariable = enteringVarIndex;
         cout<<"Entering variable is: x"<<enteringVariable+1<<endl;
     }
-
+    
+    /*
+     * Takes resource and constraint vectors and prints leaving variable
+     * declaring and initialisation var to store minimum ratio
+     * a variable which will store all ratios
+     * to calculate the ratios we have to select particular entries of the rows ,
+     * so we need this variable to store index of  the same. 
+     * We make use of a for loop which starts from zero to size of res vector,
+     * then we pass it through a if block which checks whether it is greater than zero or not.
+     * if it is >0 ratio is calculated.
+     * Another if block determine the least of ratios obtained and assign it as min 
+     * ratio and the corresponding value of "i" is given to leaving variable and then  
+     * we print the leaving variable 
+     */
     void checkleavingVariable(vector <double> res,vector <vector<double>> constraint){
-    	double min_ratio=0;//declaring and initialisation var to store minimum ratio
-        double  ratio;//a variable which will store all ratios 
-    	double currentvar;//to calculate the ratios we have to select particular entries of the rows ,so we need this variable to store index of  the same.
-    	for(int i=0;i<res.size();i++){//initialising a for-loop from zero to size of resource vector
-    	    currentvar=constraint[i][enteringVariable];//value of currentvar will be i'th term of constraint's row in the enteringVar column
-            if(currentvar>0)	{//only elements which are >=0 will be considered for min ratio
-            	ratio=res[i]/currentvar;//to find ratios we are dividing resource column with currentvar 
-            	if(min_ratio==0 || ratio<min_ratio){//condition for the least of the ratio obtained
-                	min_ratio=ratio;// assigning min_ratio the value of least of the ratios obtained
-                	leavingVariable=i;//the value of i for which we will get min ratio we be assigned to leavingVar for further calc's
+    	double min_ratio=0;
+        double  ratio;
+    	double currentvar;
+    	for(int i=0;i<res.size();i++){
+    	    currentvar=constraint[i][enteringVariable];
+            if(currentvar>0)	{
+            	ratio=res[i]/currentvar;
+            	if(min_ratio==0 || ratio<min_ratio){
+                	min_ratio=ratio;
+                	leavingVariable=i;
                 }
 		    }
 		}
@@ -157,8 +172,15 @@ class LPP{
         }
         cout<<"Optimality reached"<<endl;
         return 1;
-    }
+    } 
 
+    /*
+    * Function newPivotRow
+    * what does Function? : change elements of old pivot row for next tabel
+    * According to formula : New pivot row = Current pivot row / Pivot element
+    * initially it convert the resource element of old pivot row by dividing it by pivotElement
+    * and then convert every element of constraint of old pivot row in a for loop by dividing by pivotElement
+    */
     void newPivotRow(vector <vector<double>> &constraints , vector <double> &reso){
         reso[leavingVariable]= reso[leavingVariable]/pivotElement;
         for(int i=0;i<=constraints[leavingVariable].size();i++)
@@ -184,6 +206,7 @@ class LPP{
         cout<<optimalSolution<<" ";
 
         displayVector(reso);
+        // It will display the elements of resource vector
 
         multFactor=objective[enteringVariable]*(-1);
         for(int j=0;j<objective.size();j++)
@@ -191,12 +214,14 @@ class LPP{
             objective[j]=objective[j]+multFactor*constraints[leavingVariable][j];
         }
         displayVector(objective);
+        // It will display the coeffecients of the Objective function
         
         multFactor=1;
         for(int j=0;j<constraints.size();j++){
             if(j==leavingVariable){
                 displayVector(constraints[leavingVariable]);
-                continue;
+                //It will display the coeffecients of the constraint of the leaving variable
+               continue;
             }
             multFactor=constraints[j][enteringVariable]*(-1);
             for(int i=0;i<constraints[j].size();i++){
@@ -312,7 +337,11 @@ class ObjFunc :public LPP{
     }
 };
 
-
+/**
+ * @param dv: Vector containing int type data values.
+ * displayVector function prints all the elements
+ * of the given vector
+*/
 void displayVector(vector <int> dv)
 {
     for (int i=0 ; i< dv.size() ; i++)
@@ -322,6 +351,7 @@ void displayVector(vector <int> dv)
     cout<<endl;
 }
 
+// Overloaded displayVector to display a vector containing double type data
 void displayVector(vector <double> dv)
 {
     for (int i=0 ; i< dv.size() ; i++)
