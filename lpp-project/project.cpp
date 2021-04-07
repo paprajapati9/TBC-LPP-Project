@@ -157,7 +157,7 @@ class LPP{
         }
         cout<<"Optimality reached"<<endl;
         return 1;
-    }
+    } 
 
     void newPivotRow(vector <vector<double>> &constraints , vector <double> &reso){
         reso[leavingVariable]= reso[leavingVariable]/pivotElement;
