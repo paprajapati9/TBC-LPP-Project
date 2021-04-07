@@ -126,7 +126,12 @@ class LPP{
 		}
 		cout<<"Leaving variable is: x"<<indexOfBasic[leavingVariable]+1<<endl;//printing leaving variable. 
 	}
-
+ 
+    /**
+     * Sets the pivot element from the constraints vector
+     * based on entering and leaving variable indexes
+     * @param constraints: 2D vector of all constraints
+     */
     void setPivot( vector <vector<double>> constraints ){
         pivotElement=constraints[leavingVariable][enteringVariable];
         cout<<"Pivot element is: "<<pivotElement<<endl<<endl;
@@ -138,6 +143,9 @@ class LPP{
      * We run a loop to check for every element in the vector objective.
      * If all the elements of the vector objective or the Z row are greater than 0, the optimality has reached.
      * If even any one element is not positive, the program continues.
+     * @param objective: Objective function vector
+     * 
+     * @return bool: 0 for not optimal and 1 for optimal
      */
     bool checkOptimality(vector <double> objective){
         cout<<"\nChecking Optimality...\n";
