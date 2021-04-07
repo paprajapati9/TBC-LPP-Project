@@ -53,11 +53,17 @@ void displayVector(vector <int>);
 void displayVector(vector <double>);
 class LPP{
     public:
-    double optimalSolution {};
-    int enteringVariable {};
-    int leavingVariable {};
-    double pivotElement;
-    vector <int> indexOfBasic;
+    double optimalSolution {}; //stores optimal solution at each simplex table
+    int enteringVariable {}; //stores index of the entering variable in indexOfBasic vector
+    int leavingVariable {}; //stores index of the entering variable in objective vector
+    double pivotElement; //stores value of the pivot element at each simplex table
+    vector <int> indexOfBasic; //stores index of current basic variables in objective vector
+
+    /**
+     * Checks initial basic variables  by reading the constraints
+     * and adds thier variable in indexOfBaisc vector.
+     * @param constraint: 2D constraints vector.
+     */
     void checkBasic(vector <vector<double>> constraint)
     {
         int BasicInt {},flag {1};
@@ -76,19 +82,32 @@ class LPP{
             if (flag && (BasicInt==1))
                 indexOfBasic.push_back(i);
         }
-      //  displayVector(indexOfBasic);
+        //displayVector(indexOfBasic);
     }
-    // we will check for the most negative element in the Z-row
-    void checkEnteringVar(vector <double> objRow)
+
+    /**
+     * Checks for the most negative/positive element in the Z-row
+     * based on type of lpp problem max/min.
+     * @param objRow: Objective row vector.
+     * @param problemType: Min or Max type of problem, 0 for min, 1 for max.
+     * By default problem type is 1 that is maximizarion problem. 
+     */
+    void checkEnteringVar(vector <double> objRow, int problemType=1)
     {
-        int mostNegativeIndex = 0;
+        int enteringVarIndex = 0;
         for (int i = 0 ; i < objRow.size() ; i++)
         {
-            if (objRow[i] < objRow[mostNegativeIndex]) 
-			mostNegativeIndex = i;
+            if(problemType){
+                if (objRow[i] < objRow[enteringVarIndex]) 
+                    enteringVarIndex = i;
+            }else{
+                if (objRow[i] > objRow[enteringVarIndex]) 
+                    enteringVarIndex = i;
+            }
+            
         }
-        enteringVariable = mostNegativeIndex;
-    cout<<enteringVariable<<endl;
+        enteringVariable = enteringVarIndex;
+        cout<<"Entering variable is: x"<<enteringVariable+1<<endl;
     }
 
     void checkleavingVariable(vector <double> res,vector <vector<double>> constraint){
@@ -107,31 +126,31 @@ class LPP{
 		}
 		cout<<"Leaving variable is: x"<<indexOfBasic[leavingVariable]+1<<endl;//printing leaving variable. 
 	}
+
     void setPivot( vector <vector<double>> constraints ){
-            pivotElement=constraints[leavingVariable][enteringVariable];
-            cout<<"pivot  "<<pivotElement<<endl;
-         }
+        pivotElement=constraints[leavingVariable][enteringVariable];
+        cout<<"Pivot element is: "<<pivotElement<<endl<<endl;
+    }
 
-
-         /** The optimality is acheived if every element in the objective row is greater than 0 for maximization problem here
+    /** 
+     * The optimality is acheived if every element in the objective row is greater than 0 for maximization problem here
      * The vector objective stores the Z row elements of the problem for every iteration.
      * We run a loop to check for every element in the vector objective.
      * If all the elements of the vector objective or the Z row are greater than 0, the optimality has reached.
      * If even any one element is not positive, the program continues.
      */
-    
-     
-
     bool checkOptimality(vector <double> objective){
+        cout<<"\nChecking Optimality...\n";
         for(int i=0; i<objective.size();i++){
             if(objective[i]<0){
-               cout<<"Optimality not reached"<<endl;
+               cout<<"Optimality not reached\n\n";
                return 0;
             }
         }
         cout<<"Optimality reached"<<endl;
         return 1;
     }
+
     void newPivotRow(vector <vector<double>> &constraints , vector <double> &reso){
         reso[leavingVariable]= reso[leavingVariable]/pivotElement;
         for(int i=0;i<=constraints[leavingVariable].size();i++)
@@ -248,7 +267,8 @@ class ObjFunc :public LPP{
         objective.push_back(-3);
     }
 
-    /**Adds slack and surplus in the Objective row vector .
+    /**
+     * Adds slack and surplus in the Objective row vector .
      * @param numConst: No. of constraints in the LPP problem.
      * By default problem is <= or >= type so
      * the no of constraints can define the no.of zeros to be added in objective row vector.
@@ -259,7 +279,8 @@ class ObjFunc :public LPP{
         }
     }
 
-    /**Displays Objective function.
+    /**
+     * Displays Objective function.
      * By default objective parameters are negative .
      * @param coeff : stores the negative value of objective coefficient 
      *                if it not equal to 0(to make them positive) otherwise 
@@ -267,7 +288,8 @@ class ObjFunc :public LPP{
      * Adds '+' between each objective variable except the last one.
      */
     void display(){
-        cout<<"OBJECTIVE FUNCTION (Z) = ";
+        cout<<"**** LPP Problem ****\n\n";
+        cout<<"Max Z = ";
         for(int j=0;j<objective.size();j++){
             int coeff=(objective[j]!=0) ? (objective[j]*(-1)) : 0;
             if(j<(objective.size()-1)){
@@ -277,7 +299,7 @@ class ObjFunc :public LPP{
                 cout<<coeff<<"x"<<j+1;
             }
         }
-        cout<<endl;
+        cout<<"\n\n";
         // the objective function to be displayed should be in positive form thus we are multiplying by -1
     }
 };
@@ -302,20 +324,18 @@ void displayVector(vector <double> dv)
 }
     
 int main(){
-    cout<<" Solver"<<endl;
+    cout<<"\t\t\t  ***** LPP Solver *****\n\n\n";
     Constraint c;
     ObjFunc o;
     Resource r;
-    LPP l;
     o.Insert();
-    // o.display();
     o.SlackSurp(2);//Find out how many slack/surplus var. to be added in ObjFunc 
-    cout<<"Objective function after converting to Std Form : "<<endl;
     o.display();
-    // c.display();
     c.SlackSurp();
-    cout<<"Constraints after converting to Std Form : "<<endl;
+    cout<<"Subject To: \n";
     c.display(r.reso);
+
+    //Check initial basic variables
     c.checkBasic(c.constraints);
    
     int a=c.checkOptimality(o.objective);
@@ -329,7 +349,6 @@ int main(){
         a = c.checkOptimality(o.objective);
         cout<<endl;
     }
-
     cout<<"Optimal Solution is : "<<c.optimalSolution;
 }
 // MAX z= 2x1+3x2
