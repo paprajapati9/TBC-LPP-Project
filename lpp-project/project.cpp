@@ -51,7 +51,8 @@ using namespace std;
 
 void displayVector(vector <int>);
 void displayVector(vector <double>);
-class LPP{
+class LPP
+{
     public:
     double optimalSolution {}; //stores optimal solution at each simplex table
     int enteringVariable {}; //stores index of the entering variable in indexOfBasic vector
@@ -184,6 +185,7 @@ class LPP{
         cout<<optimalSolution<<" ";
 
         displayVector(reso);
+        // It will display the elements of resource vector
 
         multFactor=objective[enteringVariable]*(-1);
         for(int j=0;j<objective.size();j++)
@@ -191,12 +193,14 @@ class LPP{
             objective[j]=objective[j]+multFactor*constraints[leavingVariable][j];
         }
         displayVector(objective);
+        // It will display the coeffecients of the Objective function
         
         multFactor=1;
         for(int j=0;j<constraints.size();j++){
             if(j==leavingVariable){
                 displayVector(constraints[leavingVariable]);
-                continue;
+                //It will display the coeffecients of the constraint of the leaving variable
+               continue;
             }
             multFactor=constraints[j][enteringVariable]*(-1);
             for(int i=0;i<constraints[j].size();i++){
@@ -312,7 +316,11 @@ class ObjFunc :public LPP{
     }
 };
 
-
+/**
+ * @param dv: Vector containing int type data values.
+ * displayVector function prints all the elements
+ * of the given vector
+*/
 void displayVector(vector <int> dv)
 {
     for (int i=0 ; i< dv.size() ; i++)
@@ -322,6 +330,7 @@ void displayVector(vector <int> dv)
     cout<<endl;
 }
 
+// Overloaded displayVector to display a vector containing double type data
 void displayVector(vector <double> dv)
 {
     for (int i=0 ; i< dv.size() ; i++)
