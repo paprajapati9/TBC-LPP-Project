@@ -189,48 +189,66 @@ class LPP
         }      
     }
 
-    void newRow(vector <vector<double>> &constraints , vector <double> &objective , vector <double> &reso )
+    /**
+    * Function newRow
+    * What does function do?
+    * This function create the new rows of next tabel after calculation of new pivot row
+    * According to Formula :   New row element = (Current row element) - (Pivot column coefficient) * (New pivot row coefficient)
+    * @param constraint : old constraint 2D vector
+    * @param reso : old resource vector
+    * @param objective : objective vector   
+    */
+    void newRow(vector<vector<double>> &constraints, vector<double> &objective, vector<double> &reso)
     {
-        double multFactor=1;
 
-        for(int j=0;j<reso.size();j++)
+        double multFactor = 1; //used as a new pivot row coefficient
+
+        for (int j = 0; j < reso.size(); j++)
         {
-            if(j==leavingVariable)
+            if (j == leavingVariable) //skip element at index - leaving variable  i.e pivot row
+                continue;             // Reason to skip: already change happend in new pivot row function ie. new pivot row cofficient
+
+            multFactor = constraints[j][enteringVariable] * (-1); // constraints[j][enteringVariable]*(-1) -->  new pivot row coficient
+
+            reso[j] = reso[j] + multFactor * reso[leavingVariable]; // Formula applied and calculate new resource elements
+        }
+
+        //Calculate Z row cofficient of resource vector
+        multFactor = objective[enteringVariable] * (-1);
+        optimalSolution = optimalSolution + multFactor * reso[leavingVariable];
+        cout << optimalSolution << " ";
+
+        displayVector(reso); // display new resource vector
+
+        multFactor = objective[enteringVariable] * (-1);
+
+        for (int j = 0; j < objective.size(); j++)  // Calculate new objective row elements
+        {
+            objective[j] = objective[j] + multFactor * constraints[leavingVariable][j];  // formula applied and calculate new objective row
+        }
+
+        displayVector(objective);  // display new objective row element
+
+        multFactor = 1;
+
+        for (int j = 0; j < constraints.size(); j++) // Calcute new Constraint element
+        {
+            if (j == leavingVariable)  // skip leaving row elements i.e already change in new pivot row function 
+            {
+                displayVector(constraints[leavingVariable]);  
                 continue;
-            multFactor=constraints[j][enteringVariable]*(-1);
-            reso[j]=reso[j]+multFactor*reso[leavingVariable];
-        }
-
-        multFactor=objective[enteringVariable]*(-1);
-        optimalSolution=optimalSolution+multFactor*reso[leavingVariable];
-        cout<<optimalSolution<<" ";
-
-        displayVector(reso);
-        // It will display the elements of resource vector
-
-        multFactor=objective[enteringVariable]*(-1);
-        for(int j=0;j<objective.size();j++)
-        {
-            objective[j]=objective[j]+multFactor*constraints[leavingVariable][j];
-        }
-        displayVector(objective);
-        // It will display the coeffecients of the Objective function
-        
-        multFactor=1;
-        for(int j=0;j<constraints.size();j++){
-            if(j==leavingVariable){
-                displayVector(constraints[leavingVariable]);
-                //It will display the coeffecients of the constraint of the leaving variable
-               continue;
             }
-            multFactor=constraints[j][enteringVariable]*(-1);
-            for(int i=0;i<constraints[j].size();i++){
-                constraints[j][i]=constraints[j][i]+multFactor*constraints[leavingVariable][i];
+
+            multFactor = constraints[j][enteringVariable] * (-1);
+
+            for (int i = 0; i < constraints[j].size(); i++)
+            {
+                constraints[j][i] = constraints[j][i] + multFactor * constraints[leavingVariable][i]; // formula applied and calculate new constraint row
             }
-            displayVector(constraints[j]);
+
+            displayVector(constraints[j]);  // display new constraint vector
         }
     }
-    
      
 };
 class Constraint :public LPP{
