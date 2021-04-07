@@ -112,6 +112,16 @@ class LPP{
             cout<<"pivot  "<<pivotElement<<endl;
          }
 
+
+         /** The optimality is acheived if every element in the objective row is greater than 0 for maximization problem here
+     * The vector objective stores the Z row elements of the problem for every iteration.
+     * We run a loop to check for every element in the vector objective.
+     * If all the elements of the vector objective or the Z row are greater than 0, the optimality has reached.
+     * If even any one element is not positive, the program continues.
+     */
+    
+     
+
     bool checkOptimality(vector <double> objective){
         for(int i=0; i<objective.size();i++){
             if(objective[i]<0){
@@ -223,7 +233,7 @@ class Constraint :public LPP{
 
 class Resource :public LPP{
     public:
-    vector <double> reso {2,3};
+    vector <double> reso {2,3}; //stores resource coefficient
 
 };
 
