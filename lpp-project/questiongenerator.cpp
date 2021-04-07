@@ -70,10 +70,16 @@ void Question ::Set_Constraint_Cofficient()
         {
             cin >> Constraint_Cofficient[i][j];
         }
-        cout << "Condition (=,<=,>=) : ";
+        cout << "Condition (<=,>=) : ";
         cin >> Constraint_Condition[i];
         cout << "Resourse : ";
         cin >> Resource[i];
+
+        while (Constraint_Condition[i] == ">=" && Resource[i] > 0)
+        {
+            cout << "Resorce must negative i.e (condition >=) Entre again :";
+            cin >> Resource[i];
+        }
     }
 }
 
@@ -115,7 +121,7 @@ void Question ::Display_Variable_Feasibility()
 
 void Question ::Convert_Objective_Standard_Form()
 {
-    if (Type == "min" || Type == "Min")
+    if (Type == "min" || Type == "Min" || Type == "MIN")
     {
         Type = "Max";
         for (int i = 0; i < Objective_Cofficient.size(); i++)
@@ -152,14 +158,13 @@ void Question ::Convert_Constraint_Standard_Form()
         if (Constraint_Condition[i] == ">=")
         {
             Constraint_Cofficient[i][No_Of_Variable - No_Of_Slack_Surplus + i] = -1;
-            // for (int j = 0; j < No_Of_Variable; j++)
-            // {
-            //     Constraint_Cofficient[i][j] = Constraint_Cofficient[i][j] * -1;
-            //     Resource[i] = Resource[i] * -1;
-            // }
+            for (int j = 0; j < No_Of_Variable; j++)
+            {
+                if (Constraint_Cofficient[i][j] != 0)
+                    Constraint_Cofficient[i][j] = Constraint_Cofficient[i][j] * -1;
+            }
+            Resource[i] = Resource[i] * -1;
         }
-
-        Constraint_Condition[i] = "=";
     }
 }
 
@@ -185,12 +190,11 @@ int main()
     f.Display_Variable_Feasibility();
     cout << "\n*******************************************************************************\n\n";
     cout << "\n\n\n*******************************************************************************\n";
-    cout<<"STANDARD FORM :\n\n";
+    cout << "STANDARD FORM :\n\n";
     f.Convert_Objective_Standard_Form();
     f.Display_Objective_Cofficient();
     f.Convert_Constraint_Standard_Form();
     f.Display_Constraint_Cofficient();
     f.Display_Variable_Feasibility_After_Standard();
     cout << "\n*******************************************************************************\n\n";
-
 }
