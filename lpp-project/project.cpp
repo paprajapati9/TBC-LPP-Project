@@ -287,7 +287,6 @@ class ObjFunc :public LPP{
      *                it stores 0 as it is.
      * Adds '+' between each objective variable except the last one.
      */
-    //hello
     void display(){
         cout<<"**** LPP Problem ****\n\n";
         cout<<"Max Z = ";
