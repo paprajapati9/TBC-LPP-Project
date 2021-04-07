@@ -111,16 +111,20 @@ class LPP
         enteringVariable = enteringVarIndex;
         cout<<"Entering variable is: x"<<enteringVariable+1<<endl;
     }
-    /*Function= checkleavingVariable
-    -this function takes resource and constraint vectors and prints leaving variable
-    -declaring and initialisation var to store minimum ratio
-    -a variable which will store all ratios
-    -to calculate the ratios we have to select particular entries of the rows ,so we need this variable to store index of  the same. 
-    -we make use of a for loop which starts from zero to size of res vector,then we pass it through a if block which checks whether it is greater than zero or not.
-    -if it is >0 ratio is calculated.
-    - another if block determine the least of ratios obtained and assign it as min ratio and the corresponding value of "i" is given to leaving variable
-    and then  we print the leaving variable 
-    */
+    
+    /*
+     * Takes resource and constraint vectors and prints leaving variable
+     * declaring and initialisation var to store minimum ratio
+     * a variable which will store all ratios
+     * to calculate the ratios we have to select particular entries of the rows ,
+     * so we need this variable to store index of  the same. 
+     * We make use of a for loop which starts from zero to size of res vector,
+     * then we pass it through a if block which checks whether it is greater than zero or not.
+     * if it is >0 ratio is calculated.
+     * Another if block determine the least of ratios obtained and assign it as min 
+     * ratio and the corresponding value of "i" is given to leaving variable and then  
+     * we print the leaving variable 
+     */
     void checkleavingVariable(vector <double> res,vector <vector<double>> constraint){
     	double min_ratio=0;
         double  ratio;
