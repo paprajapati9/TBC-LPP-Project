@@ -93,6 +93,7 @@ class LPP
      * @param problemType: Min or Max type of problem, 0 for min, 1 for max.
      * By default problem type is 1 that is maximizarion problem. 
      */
+
     void checkEnteringVar(vector <double> objRow, int problemType=1)
     {
         int enteringVarIndex = 0;
@@ -158,8 +159,15 @@ class LPP
         }
         cout<<"Optimality reached"<<endl;
         return 1;
-    }
+    } 
 
+    /*
+    * Function newPivotRow
+    * what does Function? : change elements of old pivot row for next tabel
+    * According to formula : New pivot row = Current pivot row / Pivot element
+    * initially it convert the resource element of old pivot row by dividing it by pivotElement
+    * and then convert every element of constraint of old pivot row in a for loop by dividing by pivotElement
+    */
     void newPivotRow(vector <vector<double>> &constraints , vector <double> &reso){
         reso[leavingVariable]= reso[leavingVariable]/pivotElement;
         for(int i=0;i<=constraints[leavingVariable].size();i++)
