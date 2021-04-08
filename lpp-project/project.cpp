@@ -259,6 +259,11 @@ class Constraint :public LPP{
     // 1 denotes >= condition
     vector <int> constype{-1,-1}; //type of constraints ,have to determine consttype from the user input
 
+    /**
+     * Displays the constraints in equation form
+     * Example: 2x1 + 3x2 = 4
+     * @param res : resource vector
+     */
     void display(vector <double> res){
 
         for (int i = 0; i < constraints.size(); ++i)
@@ -275,22 +280,33 @@ class Constraint :public LPP{
 
     }
 
+    /**
+     * Adds slack or surplus variable in constraint according to 
+     * type of constraint. This basically converts the constraint 
+     * into standard form.
+     */
     void SlackSurp(){
         for (int i = 0; i < constraints.size(); ++i)
         {
             if(constype[i] == -1){
-                addZeros(i, i);
-                constraints[i].push_back(1);
-                addZeros(constraints.size()-i-1, i);
+                addZeros(i, i); //adds zero for slack/surplus var in preceding constraints
+                constraints[i].push_back(1); // 1 for slack var
+                addZeros(constraints.size()-i-1, i); //adds zero for slack/surplus var in next constraints
             }
             else if(constype[i] == 1){
-                addZeros(i, i);
-                constraints[i].push_back(-1);
-                addZeros(constraints.size()-i-1, i);
+                addZeros(i, i); //adds zero for slack/surplus var in preceding constraints
+                constraints[i].push_back(-1); // -1 for surplus var
+                addZeros(constraints.size()-i-1, i); //adds zero for slack/surplus var in next constraints
             }
         }
     }
 
+    /**
+     * Adds zero in place of slack surplus variables
+     * not present in the current constraint.
+     * @param number: number of zeros to be added
+     * @param index: which constraint out of all is being edited
+     */
     void addZeros(int number, int index){
         for (int i = 0; i < number; ++i)
         {
