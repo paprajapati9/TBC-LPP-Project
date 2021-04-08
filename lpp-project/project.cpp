@@ -36,9 +36,11 @@ class LPP
      * and adds thier variable in indexOfBaisc vector.
      * @param constraint: 2D constraints vector.
      */
-    void checkBasic(vector<vector<double>> constraint)
+    void checkBasic(vector<vector<double>> constraint, vector<double> objective, vector<double> resource)
     {
         int BasicInt{}, flag{1};
+
+        displayVector(objective, optimalSolution); // display new objective row element
 
         // i will denote the column of the table
         for (int i = 0; i < constraint[0].size(); i++)
@@ -54,6 +56,11 @@ class LPP
             }
             if (flag && (BasicInt == 1))
                 indexOfBasic.push_back(i);
+
+        }
+        for (int j = 0; j < constraint.size(); j++)
+        {
+            displayVector(constraint[j], resource[j]);
         }
     }
 
@@ -373,17 +380,6 @@ class ObjFunc : public LPP
     }
 };
 
-double round(double var)
-{
-    // 37.66666 * 100 =3766.66
-    // 3766.66 + .5 =3767.16   for rounding off value
-    // then type cast to int so value is 3767
-    // then divided by 100 so the value converted into 37.67
-    double value = (int)(var * 100 + .5);
-    return (double)value / 100;
-}
-
-
 /**
  * @param dv: Vector containing int type data values.
  * displayVector function prints all the elements
@@ -394,7 +390,6 @@ void displayVector(vector<int> dv)
     for (int i = 0; i < dv.size(); i++)
     {
         cout << left << setw(numWidth) << setfill(separator) << dv[i]<<" ";
-        // cout << dv[i] << " ";
     }
     cout << endl;
 }
@@ -404,10 +399,9 @@ void displayVector(vector<double> dv, double resourse)
 {
     for (int i = 0; i < dv.size(); i++)
     {
-        cout << left << setw(numWidth) << setfill(separator) << round(dv[i])<<" ";
-        //cout << dv[i] << " ";
+        cout << left << fixed << setprecision(2) <<setw(numWidth) << setfill(separator) << dv[i]<<" ";
     }
-    cout << left << setw(numWidth) << setfill(separator) << round(resourse)<<" ";
+    cout << left << fixed << setprecision(2) << setw(numWidth) << setfill(separator) << resourse<<" ";
     cout << endl;
 }
 
@@ -423,9 +417,10 @@ int main()
     o.display();
     cout << "Subject To: \n";
     c.display(r.reso);
+    cout<<endl;
 
     //Check initial basic variables
-    c.checkBasic(c.constraints);
+    c.checkBasic(c.constraints, o.objective, r.reso);
 
     int a = c.checkOptimality(o.objective);
 
