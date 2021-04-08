@@ -413,6 +413,10 @@ int main(){
     int a=c.checkOptimality(o.objective);
     
     while(!a){
+        /**
+         * Todo: indexofBasic is not getting updated in subsequent tables.
+         * Figure out a way to do it.
+         */
         c.checkEnteringVar(o.objective);
         c.checkleavingVariable(r.reso,c.constraints);
         c.setPivot(c.constraints);
