@@ -424,5 +424,6 @@ int main()
         a = c.checkOptimality(o.objective);
         cout << endl;
     }
-    cout << "Optimal Solution is : " << c.optimalSolution;
+    cout << "Optimal Solution is : " << c.optimalSolution<<endl<<endl;
+    system("pause");
 }
