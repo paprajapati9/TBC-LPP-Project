@@ -18,18 +18,19 @@ class LPP
     public:
     double optimalSolution{}; //stores optimal solution at each simplex table
     int enteringVariable{};   //stores index of the entering variable in indexOfBasic vector
-    int leavingVariable{};    //stores index of the entering variable in objective vector
-    int problemType;    //stores index of the entering variable in objective vector
+    int leavingVariable{};    //stores index of the leaving variable in objective vector
+    int problemType;          //stores the int indicating type of problem
     double pivotElement;      //stores value of the pivot element at each simplex table
     vector<int> indexOfBasic; //stores index of current basic variables in objective vector
 
-    void setProblemType(int probType){
+    void setProblemType(int probType)
+    {
         problemType = probType;
     }
 
     /**
-     * Checks initial basic variables  by reading the constraints
-     * and adds thier variable in indexOfBaisc vector.
+     * Checks initial basic variables by reading the constraints
+     * and adds their variables in indexOfBaisc vector.
      * @param constraint: 2D constraints vector.
      */
     void checkBasic(vector<vector<double>> constraint)
@@ -47,14 +48,17 @@ class LPP
                 if (constraint[j][i] < 0)
                     flag = 0;
                 BasicInt += constraint[j][i];
+                /* If sum of column is 1 and no negative element is
+                   present , it means the column makes identity vector */
             }
             if (flag && (BasicInt == 1))
                 indexOfBasic.push_back(i);
         }
     }
 
-    void displayBasicVariables(vector<double> resource){
-
+    //This function will tell the values of the Variables present in basis (basic variables)
+    void displayBasicVariables(vector<double> resource)
+    {
         for (int i = 0; i < indexOfBasic.size(); i++)
         {
             cout<<"x"<<indexOfBasic[i]+1<<" : "<<resource[i]<<endl;
@@ -66,7 +70,8 @@ class LPP
      * Checks for the most negative/positive element in the Z-row
      * based on type of lpp problem max/min.
      * @param objRow: Objective row vector.
-     * By default problem type is 1 that is maximizarion problem. 
+     * @param problemType: Determining max or min type problems
+     * By default problem type is 1 that is maximization problem. 
      */
     void checkEnteringVar(vector<double> objRow, int problemType=1)
     {
@@ -104,17 +109,17 @@ class LPP
      * ratio and the corresponding value of "i" is given to leaving variable and then  
      * we print the leaving variable 
      */
-    void checkleavingVariable(vector<double> res, vector<vector<double>> constraint)
+    void checkleavingVariable(vector<double> reso, vector<vector<double>> constraint)
     {
         double min_ratio = 0;
         double ratio;
         double currentVar;
-        for (int i = 0; i < res.size(); i++)
+        for (int i = 0; i < reso.size(); i++)
         {
             currentVar = constraint[i][enteringVariable];
             if (currentVar > 0)
             {
-                ratio = res[i] / currentVar;
+                ratio = reso[i] / currentVar;
                 if (min_ratio == 0 || ratio < min_ratio)
                 {
                     min_ratio = ratio;
@@ -297,7 +302,9 @@ class Constraint : public LPP
                 addZeros(i, 1); //adds zero for artificial var in all except current constraints
                 if(problemType == 0) objective.push_back(-1000); //M=1000 for current Artificial var
                 else objective.push_back(1000); //M=1000 for current Artificial var
-            }else{
+            }
+            else
+            {
                 addZeros(i, 1); //adds zero for artificial var in all except current constraints
                 if(problemType == 0) objective.push_back(-1000); //M=1000 for current Artificial var
                 else objective.push_back(1000); //M=1000 for current Artificial var
@@ -411,16 +418,16 @@ int main()
     //Check initial basic variables
     c.checkBasic(c.constraints);
 
-    int a = c.checkOptimality(o.objective);
+    int optimalCondition = c.checkOptimality(o.objective);
 
-    while (!a)
+    while (not optimalCondition)
     {
         c.checkEnteringVar(o.objective);
         c.checkleavingVariable(r.reso, c.constraints);
         c.setPivot(c.constraints);
         c.newPivotRow(c.constraints, r.reso);
         c.newRow(c.constraints, o.objective, r.reso);
-        a = c.checkOptimality(o.objective);
+        optimalCondition = c.checkOptimality(o.objective);
         cout << endl;
     }
     cout<<"Final basic variables are: \n";
