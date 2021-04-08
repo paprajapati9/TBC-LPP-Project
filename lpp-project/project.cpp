@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <iomanip>
 using namespace std;
 
 /**
@@ -11,7 +12,10 @@ using namespace std;
 */
 
 void displayVector(vector<int>);
-void displayVector(vector<double>);
+void displayVector(vector<double>, double);
+
+const char separator    = ' ';
+const int numWidth      = 10;
 
 class LPP
 {
@@ -33,9 +37,11 @@ class LPP
      * and adds their variables in indexOfBaisc vector.
      * @param constraint: 2D constraints vector.
      */
-    void checkBasic(vector<vector<double>> constraint)
+    void checkBasic(vector<vector<double>> constraint, vector<double> objective, vector<double> resource)
     {
         int BasicInt{}, flag{1};
+
+        displayVector(objective, optimalSolution); // display new objective row element
 
         // i will denote the column of the table
         for (int i = 0; i < constraint[0].size(); i++)
@@ -53,6 +59,11 @@ class LPP
             }
             if (flag && (BasicInt == 1))
                 indexOfBasic.push_back(i);
+
+        }
+        for (int j = 0; j < constraint.size(); j++)
+        {
+            displayVector(constraint[j], resource[j]);
         }
     }
 
@@ -214,9 +225,8 @@ class LPP
         //Calculate Z row cofficient of resource vector
         multFactor = objective[enteringVariable] * (-1);
         optimalSolution = optimalSolution + multFactor * reso[leavingVariable];
-        cout << optimalSolution << " ";
 
-        displayVector(reso); // display new resource vector
+        //displayVector(reso); // display new resource vector
 
         multFactor = objective[enteringVariable] * (-1);
 
@@ -225,7 +235,7 @@ class LPP
             objective[j] = objective[j] + multFactor * constraints[leavingVariable][j]; // formula applied and calculate new objective row
         }
 
-        displayVector(objective); // display new objective row element
+        displayVector(objective, optimalSolution); // display new objective row element
 
         multFactor = 1;
 
@@ -233,7 +243,7 @@ class LPP
         {
             if (j == leavingVariable) // skip leaving row elements i.e already change in new pivot row function
             {
-                displayVector(constraints[leavingVariable]);
+                displayVector(constraints[leavingVariable], reso[leavingVariable]);
                 continue;
             }
 
@@ -244,7 +254,7 @@ class LPP
                 constraints[j][i] = constraints[j][i] + multFactor * constraints[leavingVariable][i]; // formula applied and calculate new constraint row
             }
 
-            displayVector(constraints[j]); // display new constraint vector
+            displayVector(constraints[j], reso[j]); // display new constraint vector
         }
     }
 };
@@ -377,7 +387,6 @@ class ObjFunc : public LPP
     }
 };
 
-
 /**
  * @param dv: Vector containing int type data values.
  * displayVector function prints all the elements
@@ -387,18 +396,19 @@ void displayVector(vector<int> dv)
 {
     for (int i = 0; i < dv.size(); i++)
     {
-        cout << dv[i] << " ";
+        cout << left << setw(numWidth) << setfill(separator) << dv[i]<<" ";
     }
     cout << endl;
 }
 
 // Overloaded displayVector to display a vector containing double type data
-void displayVector(vector<double> dv)
+void displayVector(vector<double> dv, double resourse)
 {
     for (int i = 0; i < dv.size(); i++)
     {
-        cout << dv[i] << " ";
+        cout << left << fixed << setprecision(2) <<setw(numWidth) << setfill(separator) << dv[i]<<" ";
     }
+    cout << left << fixed << setprecision(2) << setw(numWidth) << setfill(separator) << resourse<<" ";
     cout << endl;
 }
 
@@ -414,9 +424,10 @@ int main()
     o.display();
     cout << "Subject To: \n";
     c.display(r.reso);
+    cout<<endl;
 
     //Check initial basic variables
-    c.checkBasic(c.constraints);
+    c.checkBasic(c.constraints, o.objective, r.reso);
 
     int optimalCondition = c.checkOptimality(o.objective);
 
