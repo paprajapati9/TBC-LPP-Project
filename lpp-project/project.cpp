@@ -2,8 +2,17 @@
 #include <vector>
 using namespace std;
 
+/**
+ * TESTING PROBLEM
+ * MAX z= 2x1+3x2
+ *  S.to x1+2X2 <= 2
+ *       2x2 +x1<=3
+ * x1,x2>=0
+*/
+
 void displayVector(vector<int>);
 void displayVector(vector<double>);
+
 class LPP
 {
     public:
@@ -70,7 +79,9 @@ class LPP
     }
 
 
-    /*
+    /**
+     * @param res: Resource Vector
+     * @param constraint: 2D constraint Vector 
      * Takes resource and constraint vectors and prints leaving variable
      * declaring and initialisation var to store minimum ratio
      * a variable which will store all ratios
@@ -87,13 +98,13 @@ class LPP
     {
         double min_ratio = 0;
         double ratio;
-        double currentvar;
+        double currentVar;
         for (int i = 0; i < res.size(); i++)
         {
-            currentvar = constraint[i][enteringVariable];
-            if (currentvar > 0)
+            currentVar = constraint[i][enteringVariable];
+            if (currentVar > 0)
             {
-                ratio = res[i] / currentvar;
+                ratio = res[i] / currentVar;
                 if (min_ratio == 0 || ratio < min_ratio)
                 {
                     min_ratio = ratio;
@@ -145,7 +156,7 @@ class LPP
 
 
     /**
-    * Function newPivotRow
+    * @param reso: resource vector
     * what does Function? : change elements of old pivot row for next tabel
     * According to formula : New pivot row = Current pivot row / Pivot element
     * initially it convert the resource element of old pivot row by dividing it by pivotElement
@@ -241,7 +252,6 @@ class Constraint : public LPP
      */
     void display(vector<double> res)
     {
-
         for (int i = 0; i < constraints.size(); ++i)
         {
             for (int j = 0; j < constraints[i].size(); ++j)
@@ -279,6 +289,7 @@ class Constraint : public LPP
         }
     }
 
+
     /**
      * Adds zero in place of slack surplus variables
      * not present in the current constraint.
@@ -293,6 +304,7 @@ class Constraint : public LPP
         }
     }
 };
+
 
 class Resource : public LPP
 {
@@ -355,6 +367,7 @@ class ObjFunc : public LPP
     }
 };
 
+
 /**
  * @param dv: Vector containing int type data values.
  * displayVector function prints all the elements
@@ -413,7 +426,3 @@ int main()
     }
     cout << "Optimal Solution is : " << c.optimalSolution;
 }
-// MAX z= 2x1+3x2
-//  S.to x1+2X2 <= 2
-//       2x2 +x1<=3
-// x1,x2>=0
