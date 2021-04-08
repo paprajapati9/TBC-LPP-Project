@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <iomanip>
 using namespace std;
 
 /**
@@ -11,7 +12,10 @@ using namespace std;
 */
 
 void displayVector(vector<int>);
-void displayVector(vector<double>);
+void displayVector(vector<double>, double);
+
+const char separator    = ' ';
+const int numWidth      = 10;
 
 class LPP
 {
@@ -209,9 +213,8 @@ class LPP
         //Calculate Z row cofficient of resource vector
         multFactor = objective[enteringVariable] * (-1);
         optimalSolution = optimalSolution + multFactor * reso[leavingVariable];
-        cout << optimalSolution << " ";
 
-        displayVector(reso); // display new resource vector
+        //displayVector(reso); // display new resource vector
 
         multFactor = objective[enteringVariable] * (-1);
 
@@ -220,7 +223,7 @@ class LPP
             objective[j] = objective[j] + multFactor * constraints[leavingVariable][j]; // formula applied and calculate new objective row
         }
 
-        displayVector(objective); // display new objective row element
+        displayVector(objective, optimalSolution); // display new objective row element
 
         multFactor = 1;
 
@@ -228,7 +231,7 @@ class LPP
         {
             if (j == leavingVariable) // skip leaving row elements i.e already change in new pivot row function
             {
-                displayVector(constraints[leavingVariable]);
+                displayVector(constraints[leavingVariable], reso[leavingVariable]);
                 continue;
             }
 
@@ -239,7 +242,7 @@ class LPP
                 constraints[j][i] = constraints[j][i] + multFactor * constraints[leavingVariable][i]; // formula applied and calculate new constraint row
             }
 
-            displayVector(constraints[j]); // display new constraint vector
+            displayVector(constraints[j], reso[j]); // display new constraint vector
         }
     }
 };
@@ -370,6 +373,16 @@ class ObjFunc : public LPP
     }
 };
 
+double round(double var)
+{
+    // 37.66666 * 100 =3766.66
+    // 3766.66 + .5 =3767.16   for rounding off value
+    // then type cast to int so value is 3767
+    // then divided by 100 so the value converted into 37.67
+    double value = (int)(var * 100 + .5);
+    return (double)value / 100;
+}
+
 
 /**
  * @param dv: Vector containing int type data values.
@@ -380,18 +393,21 @@ void displayVector(vector<int> dv)
 {
     for (int i = 0; i < dv.size(); i++)
     {
-        cout << dv[i] << " ";
+        cout << left << setw(numWidth) << setfill(separator) << dv[i]<<" ";
+        // cout << dv[i] << " ";
     }
     cout << endl;
 }
 
 // Overloaded displayVector to display a vector containing double type data
-void displayVector(vector<double> dv)
+void displayVector(vector<double> dv, double resourse)
 {
     for (int i = 0; i < dv.size(); i++)
     {
-        cout << dv[i] << " ";
+        cout << left << setw(numWidth) << setfill(separator) << round(dv[i])<<" ";
+        //cout << dv[i] << " ";
     }
+    cout << left << setw(numWidth) << setfill(separator) << round(resourse)<<" ";
     cout << endl;
 }
 
