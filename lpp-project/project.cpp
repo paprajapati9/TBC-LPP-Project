@@ -19,9 +19,13 @@ class LPP
     double optimalSolution{}; //stores optimal solution at each simplex table
     int enteringVariable{};   //stores index of the entering variable in indexOfBasic vector
     int leavingVariable{};    //stores index of the entering variable in objective vector
+    int problemType;    //stores index of the entering variable in objective vector
     double pivotElement;      //stores value of the pivot element at each simplex table
     vector<int> indexOfBasic; //stores index of current basic variables in objective vector
 
+    void setProblemType(int probType){
+        problemType = probType;
+    }
 
     /**
      * Checks initial basic variables  by reading the constraints
@@ -47,7 +51,14 @@ class LPP
             if (flag && (BasicInt == 1))
                 indexOfBasic.push_back(i);
         }
-        //displayVector(indexOfBasic);
+    }
+
+    void displayBasicVariables(vector<double> resource){
+
+        for (int i = 0; i < indexOfBasic.size(); i++)
+        {
+            cout<<"x"<<indexOfBasic[i]+1<<" : "<<resource[i]<<endl;
+        }
     }
 
 
@@ -55,10 +66,9 @@ class LPP
      * Checks for the most negative/positive element in the Z-row
      * based on type of lpp problem max/min.
      * @param objRow: Objective row vector.
-     * @param problemType: Min or Max type of problem, 0 for min, 1 for max.
      * By default problem type is 1 that is maximizarion problem. 
      */
-    void checkEnteringVar(vector<double> objRow, int problemType = 1)
+    void checkEnteringVar(vector<double> objRow)
     {
         int enteringVarIndex = 0;
         for (int i = 0; i < objRow.size(); i++)
@@ -113,6 +123,7 @@ class LPP
             }
         }
         cout << "Leaving variable is: x" << indexOfBasic[leavingVariable] + 1 << endl; //printing leaving variable.
+        indexOfBasic[leavingVariable] = enteringVariable;
     }
 
 
@@ -270,21 +281,26 @@ class Constraint : public LPP
      * type of constraint. This basically converts the constraint 
      * into standard form.
      */
-    void SlackSurp()
+    void SlackSurp(vector<double> &objective)
     {
         for (int i = 0; i < constraints.size(); ++i)
         {
-            if (constype[i] == -1)
+            if (constype[i] == -1) // -1 : <= enequality
             {
-                addZeros(i, i);                          //adds zero for slack/surplus var in preceding constraints
-                constraints[i].push_back(1);             // 1 for slack var
-                addZeros(constraints.size() - i - 1, i); //adds zero for slack/surplus var in next constraints
+                addZeros(i, 1);  //adds zero for slack var in all except current constraints
+                objective.push_back(0); //0 for current slack var
             }
-            else if (constype[i] == 1)
+            else if (constype[i] == 1) // 1 : >= enequality
             {
-                addZeros(i, i);                          //adds zero for slack/surplus var in preceding constraints
-                constraints[i].push_back(-1);            // -1 for surplus var
-                addZeros(constraints.size() - i - 1, i); //adds zero for slack/surplus var in next constraints
+                addZeros(i, -1); //adds zero for surplus var in all except current constraints
+                objective.push_back(0); //0 for current surplus var
+                addZeros(i, 1); //adds zero for artificial var in all except current constraints
+                if(problemType == 0) objective.push_back(-1000); //M=1000 for current Artificial var
+                else objective.push_back(1000); //M=1000 for current Artificial var
+            }else{
+                addZeros(i, 1); //adds zero for artificial var in all except current constraints
+                if(problemType == 0) objective.push_back(-1000); //M=1000 for current Artificial var
+                else objective.push_back(1000); //M=1000 for current Artificial var
             }
         }
     }
@@ -293,14 +309,15 @@ class Constraint : public LPP
     /**
      * Adds zero in place of slack surplus variables
      * not present in the current constraint.
-     * @param number: number of zeros to be added
      * @param index: which constraint out of all is being edited
+     * @param coefficient: coefficient to be added in current constraint
      */
-    void addZeros(int number, int index)
+    void addZeros(int index, int coefficient)
     {
-        for (int i = 0; i < number; ++i)
+        for (int i = 0; i < constraints.size(); ++i)
         {
-            constraints[index].push_back(0);
+            if(i == index) constraints[index].push_back(coefficient);
+            else constraints[i].push_back(0);
         }
     }
 };
@@ -322,20 +339,6 @@ class ObjFunc : public LPP
     { 
         objective.push_back(-2);
         objective.push_back(-3);
-    }
-
-    /**
-     * Adds slack and surplus in the Objective row vector .
-     * @param numConst: No. of constraints in the LPP problem.
-     * By default problem is <= or >= type so
-     * the no of constraints can define the no.of zeros to be added in objective row vector.
-    */
-    void SlackSurp(int numConst)
-    {
-        for (int i = 0; i < numConst; i++)
-        {
-            objective.push_back(0);
-        }
     }
 
     /**
@@ -398,10 +401,10 @@ int main()
     Constraint c;
     ObjFunc o;
     Resource r;
+    o.setProblemType(1); //set min/max problem type
     o.Insert();
-    o.SlackSurp(2); //Find out how many slack/surplus var. to be added in ObjFunc
+    c.SlackSurp(o.objective);
     o.display();
-    c.SlackSurp();
     cout << "Subject To: \n";
     c.display(r.reso);
 
@@ -412,10 +415,6 @@ int main()
 
     while (!a)
     {
-        /**
-         * Todo: indexofBasic is not getting updated in subsequent tables.
-         * Figure out a way to do it.
-         */
         c.checkEnteringVar(o.objective);
         c.checkleavingVariable(r.reso, c.constraints);
         c.setPivot(c.constraints);
@@ -424,6 +423,8 @@ int main()
         a = c.checkOptimality(o.objective);
         cout << endl;
     }
+    cout<<"Final basic variables are: \n";
+    c.displayBasicVariables(r.reso);
     cout << "Optimal Solution is : " << c.optimalSolution<<endl<<endl;
-    system("pause");
+    getchar();
 }
