@@ -68,7 +68,7 @@ class LPP
      * @param objRow: Objective row vector.
      * By default problem type is 1 that is maximizarion problem. 
      */
-    void checkEnteringVar(vector<double> objRow)
+    void checkEnteringVar(vector<double> objRow, int problemType=1)
     {
         int enteringVarIndex = 0;
         for (int i = 0; i < objRow.size(); i++)
@@ -281,7 +281,7 @@ class Constraint : public LPP
      * type of constraint. This basically converts the constraint 
      * into standard form.
      */
-    void SlackSurp(vector<double> &objective)
+    void SlackSurp(vector<double> &objective, int problemType=1)
     {
         for (int i = 0; i < constraints.size(); ++i)
         {
