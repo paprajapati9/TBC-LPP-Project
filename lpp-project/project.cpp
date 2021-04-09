@@ -1,8 +1,11 @@
 #include <iostream>
 #include <vector>
 #include <iomanip>
+#include <string>
 using namespace std;
 
+#define separator   ' '
+#define numWidth  10
 /**
  * TESTING PROBLEM
  * MAX z= 2x1+3x2
@@ -13,9 +16,8 @@ using namespace std;
 
 void displayVector(vector<int>);
 void displayVector(vector<double>, double);
+// void displayVector(vector<double>, double , int);
 
-const char separator    = ' ';
-const int numWidth      = 10;
 
 class LPP
 {
@@ -40,7 +42,8 @@ class LPP
     void checkBasic(vector<vector<double>> constraint, vector<double> objective, vector<double> resource)
     {
         int BasicInt{}, flag{1};
-
+        for(int i = 1; i <= 4; i++) cout<<"x"<<i<<setw(10);
+        cout<<"\t    Solution\n";
         displayVector(objective, optimalSolution); // display new objective row element
 
         // i will denote the column of the table
@@ -229,7 +232,11 @@ class LPP
         //displayVector(reso); // display new resource vector
 
         multFactor = objective[enteringVariable] * (-1);
-
+        for(int i = 1; i <= 4; i++) 
+        {
+            cout<<left<<setw(10)<<"x"+to_string(i)<<" ";
+        }
+        cout<<"Solution\n";
         for (int j = 0; j < objective.size(); j++) // Calculate new objective row elements
         {
             objective[j] = objective[j] + multFactor * constraints[leavingVariable][j]; // formula applied and calculate new objective row
@@ -404,8 +411,10 @@ void displayVector(vector<int> dv)
 // Overloaded displayVector to display a vector containing double type data
 void displayVector(vector<double> dv, double resourse)
 {
+    // if(!basicValue) cout<<"Z ";
+    // else cout<<"x"<<basicValue;
     for (int i = 0; i < dv.size(); i++)
-    {
+    {   
         cout << left << fixed << setprecision(2) <<setw(numWidth) << setfill(separator) << dv[i]<<" ";
     }
     cout << left << fixed << setprecision(2) << setw(numWidth) << setfill(separator) << resourse<<" ";
