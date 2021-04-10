@@ -44,9 +44,11 @@ class LPP
     void checkBasic(vector<vector<double>> constraint, vector<double> objective, vector<double> resource)
     {
         int BasicInt{}, flag{1};
+
         cout<<left<<setw(10)<<"Basic";
         for(int i = 1; i <= 4; i++) cout<<"x"<<setw(10)<<i;
         cout<<"Solution\n";
+        //Printing Column Labels of initial table
         cout<<left<<setw(10)<<setfill(separator)<<"Z";
         displayVector(objective, optimalSolution); // display new objective row element
 
@@ -70,7 +72,7 @@ class LPP
         }
         for (int j = 0; j < constraint.size(); j++)
         {
-            cout<<"x"<<left<<setw(9)<<indexOfBasic[j]+1;
+            cout<<"x"<<left<<setw(9)<<indexOfBasic[j]+1; // Displaying Basic Variable Column Values
             displayVector(constraint[j], resource[j]);
         }
     }
@@ -255,6 +257,7 @@ class LPP
             if (j == leavingVariable) // skip leaving row elements i.e already change in new pivot row function
             {   
                 cout<<"x"<<left<<setw(9)<<indexOfBasic[leavingVariable]+1;
+                // Displaying Basic Variable Value
                 displayVector(constraints[leavingVariable], reso[leavingVariable]);
                 continue;
             }
@@ -266,6 +269,7 @@ class LPP
                 constraints[j][i] = constraints[j][i] + multFactor * constraints[leavingVariable][i]; // formula applied and calculate new constraint row
             }
             cout<<"x"<<left<<setw(9)<<indexOfBasic[enteringVariable]+1;
+            // Displaying Basic Variable Value
             displayVector(constraints[j], reso[j]); // display new constraint vector
         }
     }
