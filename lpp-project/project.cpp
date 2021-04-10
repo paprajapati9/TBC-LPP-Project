@@ -232,10 +232,8 @@ class LPP
         //displayVector(reso); // display new resource vector
 
         multFactor = objective[enteringVariable] * (-1);
-        for(int i = 1; i <= 4; i++) 
-        {
-            cout<<left<<setw(10)<<"x"+to_string(i)<<" ";
-        }
+        cout<<left<<setw(10)<<"Basic";
+        for(int i = 1; i <= 4; i++) cout<<left<<setw(10)<<"x"+to_string(i)<<" ";
         cout<<"Solution\n";
         for (int j = 0; j < objective.size(); j++) // Calculate new objective row elements
         {
@@ -260,7 +258,6 @@ class LPP
             {
                 constraints[j][i] = constraints[j][i] + multFactor * constraints[leavingVariable][i]; // formula applied and calculate new constraint row
             }
-
             displayVector(constraints[j], reso[j]); // display new constraint vector
         }
     }
@@ -411,6 +408,7 @@ void displayVector(vector<int> dv)
 // Overloaded displayVector to display a vector containing double type data
 void displayVector(vector<double> dv, double resourse)
 {
+    cout<<left<<setw(10)<<"BVar";
     // if(!basicValue) cout<<"Z ";
     // else cout<<"x"<<basicValue;
     for (int i = 0; i < dv.size(); i++)
