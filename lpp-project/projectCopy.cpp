@@ -442,10 +442,6 @@ int main()
     c.display(r.reso);
     cout<<endl;
 
-    fraction a(1, 2);
-    fraction b(1, 3);
-    cout<<b-a<<endl;
-
     //Check initial basic variables
     c.checkBasic(c.constraints, o.objective, r.reso);
 

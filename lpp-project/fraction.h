@@ -1,7 +1,7 @@
 #ifndef __fraction_H_INCLUDED__
 #define __fraction_H_INCLUDED__
 
-#include <bits/stdc++.h>
+#include <iostream>
 
 /**
  * Fraction data type class
@@ -19,6 +19,12 @@ class fraction
         this->denominator = denominator;
     }
 
+    int gcd(int a, int b){
+        if (b == 0)
+            return a;
+        return gcd(b, a % b);  
+    }
+
     // Function to reduce a fraction to its lowest form
     void simplestForm(double &numerator, double &denominator)
     {
@@ -27,7 +33,7 @@ class fraction
         //for negative numbers, so making it temperorily positive
         if(num < 0) num *= -1;
         if(den < 0) den *= -1;
-        d = std::__gcd((int)num, (int)den);
+        d = gcd((int)num, (int)den);
       
         numerator = numerator / d;
         denominator = denominator / d;
