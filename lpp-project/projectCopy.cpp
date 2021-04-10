@@ -19,18 +19,18 @@ int leavingVariable = 0;
 */
 
 void displayVector(vector<int>);
-void displayVector(vector<double>, double);
-// void displayVector(vector<double>, double , int);
+void displayVector(vector<fraction>, fraction);
+// void displayVector(vector<fraction>, fraction , int);
 
 
 class LPP
 {
     public:
-    double optimalSolution{}; //stores optimal solution at each simplex table
+    fraction optimalSolution{}; //stores optimal solution at each simplex table
     int enteringVariable{};   //stores index of the entering variable in indexOfBasic vector
     int leavingVariable{};    //stores index of the leaving variable in objective vector
     int problemType;          //stores the int indicating type of problem
-    double pivotElement;      //stores value of the pivot element at each simplex table
+    fraction pivotElement;      //stores value of the pivot element at each simplex table
     vector<int> indexOfBasic; //stores index of current basic variables in objective vector
 
     void setProblemType(int probType)
@@ -43,14 +43,13 @@ class LPP
      * and adds their variables in indexOfBaisc vector.
      * @param constraint: 2D constraints vector.
      */
-    void checkBasic(vector<vector<double>> constraint, vector<double> objective, vector<double> resource)
+    void checkBasic(vector<vector<fraction>> constraint, vector<fraction> objective, vector<fraction> resource)
     {
-        int BasicInt{}, flag{1};
-
+        fraction BasicInt{};
+        int flag{1};
         cout<<left<<setw(10)<<"Basic";
         for(int i = 1; i <= 4; i++) cout<<"x"<<setw(10)<<i;
         cout<<"Solution\n";
-        //Printing Column Labels of initial table
         cout<<left<<setw(10)<<setfill(separator)<<"Z";
         displayVector(objective, optimalSolution); // display new objective row element
 
@@ -64,7 +63,7 @@ class LPP
             {
                 if (constraint[j][i] < 0)
                     flag = 0;
-                BasicInt += constraint[j][i];
+                BasicInt = BasicInt + constraint[j][i];
                 /* If sum of column is 1 and no negative element is
                    present , it means the column makes identity vector */
             }
@@ -74,13 +73,13 @@ class LPP
         }
         for (int j = 0; j < constraint.size(); j++)
         {
-            cout<<"x"<<left<<setw(9)<<indexOfBasic[j]+1; // Displaying Basic Variable Column Values
+            cout<<"x"<<left<<setw(9)<<indexOfBasic[j]+1;
             displayVector(constraint[j], resource[j]);
         }
     }
 
     //This function will tell the values of the Variables present in basis (basic variables)
-    void displayBasicVariables(vector<double> resource)
+    void displayBasicVariables(vector<fraction> resource)
     {
         for (int i = 0; i < indexOfBasic.size(); i++)
         {
@@ -96,7 +95,7 @@ class LPP
      * @param problemType: Determining max or min type problems
      * By default problem type is 1 that is maximization problem. 
      */
-    int checkEnteringVar(vector<double> objRow, int problemType=1)
+    int checkEnteringVar(vector<fraction> objRow, int problemType=1)
     {
         int enteringVarIndex = 0;
         for (int i = 0; i < objRow.size(); i++)
@@ -133,11 +132,11 @@ class LPP
      * ratio and the corresponding value of "i" is given to leaving variable and then  
      * we print the leaving variable 
      */
-    int checkleavingVariable(vector<double> reso, vector<vector<double>> constraint)
+    int checkleavingVariable(vector<fraction> reso, vector<vector<fraction>> constraint)
     {
-        double min_ratio = 0;
-        double ratio;
-        double currentVar;
+        fraction min_ratio = 0;
+        fraction ratio;
+        fraction currentVar;
         for (int i = 0; i < reso.size(); i++)
         {
             currentVar = constraint[i][enteringVariable];
@@ -163,7 +162,7 @@ class LPP
      * based on entering and leaving variable indexes
      * @param constraints: 2D vector of all constraints
      */
-    void setPivot(vector<vector<double>> constraints)
+    void setPivot(vector<vector<fraction>> constraints)
     {
         pivotElement = constraints[leavingVariable][enteringVariable];
         cout << "Pivot element is: " << pivotElement << endl
@@ -181,7 +180,7 @@ class LPP
      * 
      * @return bool: 0 for not optimal and 1 for optimal
      */
-    bool checkOptimality(vector<double> objective)
+    bool checkOptimality(vector<fraction> objective)
     {
         cout << "\nChecking Optimality...\n";
         for (int i = 0; i < objective.size(); i++)
@@ -204,7 +203,7 @@ class LPP
     * initially it convert the resource element of old pivot row by dividing it by pivotElement
     * and then convert every element of constraint of old pivot row in a for loop by dividing by pivotElement
     */
-    void newPivotRow(vector<vector<double>> &constraints, vector<double> &reso)
+    void newPivotRow(vector<vector<fraction>> &constraints, vector<fraction> &reso)
     {
         reso[leavingVariable] = reso[leavingVariable] / pivotElement;
         for (int i = 0; i <= constraints[leavingVariable].size(); i++)
@@ -223,9 +222,9 @@ class LPP
     * @param reso : old resource vector
     * @param objective : objective vector   
     */
-    void newRow(vector<vector<double>> &constraints, vector<double> &objective, vector<double> &reso)
+    void newRow(vector<vector<fraction>> &constraints, vector<fraction> &objective, vector<fraction> &reso)
     {
-        double multFactor = 1; //used as a new pivot row coefficient
+        fraction multFactor = 1; //used as a new pivot row coefficient
 
         for (int j = 0; j < reso.size(); j++)
         {
@@ -254,12 +253,12 @@ class LPP
         displayVector(objective, optimalSolution); // display new objective row element
 
         multFactor = 1;
+
         for (int j = 0; j < constraints.size(); j++) // Calcute new Constraint element
         {
             if (j == leavingVariable) // skip leaving row elements i.e already change in new pivot row function
             {   
-                cout<<"x"<<left<<setw(9)<<indexOfBasic[leavingVariable]+1;
-                // Displaying Basic Variable Value
+                cout<<"x"<<left<<setw(9)<<indexOfBasic[0]+1;
                 displayVector(constraints[leavingVariable], reso[leavingVariable]);
                 continue;
             }
@@ -270,8 +269,7 @@ class LPP
             {
                 constraints[j][i] = constraints[j][i] + multFactor * constraints[leavingVariable][i]; // formula applied and calculate new constraint row
             }
-            cout<<"x"<<left<<setw(9)<<indexOfBasic[enteringVariable]+1;
-            // Displaying Basic Variable Value
+            cout<<"x"<<left<<setw(9)<<indexOfBasic[1]+1;
             displayVector(constraints[j], reso[j]); // display new constraint vector
         }
     }
@@ -281,7 +279,7 @@ class LPP
 class Constraint : public LPP
 {
     public:
-    vector<vector<double>> constraints{{1, 2}, {2, 1}};
+    vector<vector<fraction>> constraints{{1, 2}, {2, 1}};
 
     /**
      * @condition: -1 : <=
@@ -294,7 +292,7 @@ class Constraint : public LPP
      * Example: 2x1 + 3x2 = 4
      * @param res : resource vector
      */
-    void display(vector<double> res)
+    void display(vector<fraction> res)
     {
         for (int i = 0; i < constraints.size(); ++i)
         {
@@ -314,7 +312,7 @@ class Constraint : public LPP
      * type of constraint. This basically converts the constraint 
      * into standard form.
      */
-    void SlackSurp(vector<double> &objective, int problemType=1)
+    void SlackSurp(vector<fraction> &objective, int problemType=1)
     {
         for (int i = 0; i < constraints.size(); ++i)
         {
@@ -361,13 +359,13 @@ class Constraint : public LPP
 class Resource : public LPP
 {
     public:
-    vector<double> reso{2, 3}; //stores resource coefficient
+    vector<fraction> reso{2, 3}; //stores resource coefficient
 };
 
 class ObjFunc : public LPP
 {
     public:
-    vector<double> objective; //stores objective coefficient.
+    vector<fraction> objective; //stores objective coefficient.
 
     //Insert coefficient of objective function to objective vector.
     void Insert()
@@ -390,7 +388,7 @@ class ObjFunc : public LPP
         cout << "Max Z = ";
         for (int j = 0; j < objective.size(); j++)
         {
-            int coeff = (objective[j] != 0) ? (objective[j] * (-1)) : 0;
+            fraction coeff = (objective[j] != 0) ? (objective[j] * (-1)) : 0;
             // the objective function to be displayed should be in positive form thus we are multiplying by -1
             if (j < (objective.size() - 1))
             {
@@ -419,14 +417,14 @@ void displayVector(vector<int> dv)
     cout << endl;
 }
 
-// Overloaded displayVector to display a vector containing double type data
-void displayVector(vector<double> dv, double resourse)
+// Overloaded displayVector to display a vector containing fraction type data
+void displayVector(vector<fraction> dv, fraction resourse)
 {
     for (int i = 0; i < dv.size(); i++)
     {   
-        cout << left << fixed << setprecision(2) <<setw(numWidth) << setfill(separator) << dv[i]<<" ";
+        cout << dv[i]<<"          ";
     }
-    cout << left << fixed << setprecision(2) << setw(numWidth) << setfill(separator) << resourse<<" ";
+    cout << resourse<<"          ";
     cout << endl;
 }
 
@@ -444,8 +442,9 @@ int main()
     c.display(r.reso);
     cout<<endl;
 
-    fraction a(4, 5);
-    cout<< a<<endl;
+    fraction a(1, 2);
+    fraction b(1, 3);
+    cout<<b-a<<endl;
 
     //Check initial basic variables
     c.checkBasic(c.constraints, o.objective, r.reso);
