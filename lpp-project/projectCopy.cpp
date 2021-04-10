@@ -206,7 +206,7 @@ class LPP
     void newPivotRow(vector<vector<fraction>> &constraints, vector<fraction> &reso)
     {
         reso[leavingVariable] = reso[leavingVariable] / pivotElement;
-        for (int i = 0; i <= constraints[leavingVariable].size(); i++)
+        for (int i = 0; i < constraints[leavingVariable].size(); i++)
         {
             constraints[leavingVariable][i] = constraints[leavingVariable][i] / pivotElement;
         }
