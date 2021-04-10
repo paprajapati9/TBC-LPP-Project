@@ -444,8 +444,8 @@ int main()
     c.display(r.reso);
     cout<<endl;
 
-    fraction a(4, 5);
-    cout<< a<<endl;
+    // fraction a(4, 5);
+    // cout<< a<<endl;
 
     //Check initial basic variables
     c.checkBasic(c.constraints, o.objective, r.reso);
@@ -466,7 +466,3 @@ int main()
     cout << "Optimal Solution is : " << c.optimalSolution<<endl<<endl;
     getchar();
 }
-
-/*
- * Check If the Basisvalues are correctly displaying or not ( inside newRow function)
-*/
