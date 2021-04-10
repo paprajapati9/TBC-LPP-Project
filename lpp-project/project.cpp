@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <iomanip>
+#include "fraction.h"
 using namespace std;
 
 /**
@@ -425,6 +426,9 @@ int main()
     cout << "Subject To: \n";
     c.display(r.reso);
     cout<<endl;
+
+    fraction a(4, 5);
+    cout<< a<<endl;
 
     //Check initial basic variables
     c.checkBasic(c.constraints, o.objective, r.reso);
