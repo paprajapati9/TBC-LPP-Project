@@ -250,12 +250,11 @@ class LPP
         displayVector(objective, optimalSolution); // display new objective row element
 
         multFactor = 1;
-
         for (int j = 0; j < constraints.size(); j++) // Calcute new Constraint element
         {
             if (j == leavingVariable) // skip leaving row elements i.e already change in new pivot row function
             {   
-                cout<<"x"<<left<<setw(9)<<indexOfBasic[0]+1;
+                cout<<"x"<<left<<setw(9)<<indexOfBasic[leavingVariable]+1;
                 displayVector(constraints[leavingVariable], reso[leavingVariable]);
                 continue;
             }
@@ -266,7 +265,7 @@ class LPP
             {
                 constraints[j][i] = constraints[j][i] + multFactor * constraints[leavingVariable][i]; // formula applied and calculate new constraint row
             }
-            cout<<"x"<<left<<setw(9)<<indexOfBasic[1]+1;
+            cout<<"x"<<left<<setw(9)<<indexOfBasic[enteringVariable]+1;
             displayVector(constraints[j], reso[j]); // display new constraint vector
         }
     }
