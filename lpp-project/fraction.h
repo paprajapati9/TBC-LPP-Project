@@ -3,12 +3,16 @@
 
 #include <bits/stdc++.h>
 
+/**
+ * Fraction data type class
+ */
 class fraction
 {
   public:
     double numerator;
     double denominator;
 
+    //constructor
     fraction(double numerator = 0, double denominator = 1){
         simplestForm(numerator, denominator);
         this->numerator = numerator;
@@ -19,6 +23,8 @@ class fraction
     void simplestForm(double &numerator, double &denominator)
     {
         double d, num = numerator, den = denominator;
+        //in case of calculation gcd of negative numbers, it gives wrong answers
+        //for negative numbers, so making it temperorily positive
         if(num < 0) num *= -1;
         if(den < 0) den *= -1;
         d = std::__gcd((int)num, (int)den);
@@ -42,10 +48,6 @@ class fraction
     friend bool operator > (fraction const &, fraction const &);
 
     friend bool operator == (fraction const &, fraction const &);
-
-    //operator fraction() { return fraction(numerator); }
-
-    //operator int() { return (int)(numerator/denominator); }
 };
 
 std::ostream& operator<< (std::ostream &out, const fraction &frac)
