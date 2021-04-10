@@ -6,20 +6,22 @@
 class fraction
 {
   public:
-    int numerator;
-    int denominator;
+    double numerator;
+    double denominator;
 
-    fraction(int numerator = 0, int denominator = 1){
+    fraction(double numerator = 0, double denominator = 1){
         simplestForm(numerator, denominator);
         this->numerator = numerator;
         this->denominator = denominator;
     }
 
     // Function to reduce a fraction to its lowest form
-    void simplestForm(int &numerator, int &denominator)
+    void simplestForm(double &numerator, double &denominator)
     {
-        int d;
-        d = std::__gcd(numerator, denominator);
+        double d, num = numerator, den = denominator;
+        if(num < 0) num *= -1;
+        if(den < 0) den *= -1;
+        d = std::__gcd((int)num, (int)den);
       
         numerator = numerator / d;
         denominator = denominator / d;
@@ -34,12 +36,23 @@ class fraction
     friend fraction operator * (fraction const &, fraction const &);
 
     friend fraction operator / (fraction const &, fraction const &);
+
+    friend bool operator < (fraction const &, fraction const &);
+
+    friend bool operator > (fraction const &, fraction const &);
+
+    friend bool operator == (fraction const &, fraction const &);
+
+    //operator fraction() { return fraction(numerator); }
+
+    //operator int() { return (int)(numerator/denominator); }
 };
 
 std::ostream& operator<< (std::ostream &out, const fraction &frac)
 {
     // Since operator<< is a friend of the fraction class, we can access fraction's members directly.
-    if(frac.denominator > 1)
+    if(frac.numerator == -0) out << 0;
+    else if(frac.denominator > 1)
         out << frac.numerator << "/" << frac.denominator ; // actual output done here
     else 
         out << frac.numerator;
@@ -50,8 +63,8 @@ std::ostream& operator<< (std::ostream &out, const fraction &frac)
 //Function to add two fractions
 fraction operator + (fraction const &frac1, fraction const &frac2)
 {
-    int newNumerator = frac1.numerator * frac2.denominator + frac2.numerator * frac1.denominator;
-    int newDenomenator = frac1.denominator * frac2.denominator;
+    double newNumerator = frac1.numerator * frac2.denominator + frac2.numerator * frac1.denominator;
+    double newDenomenator = frac1.denominator * frac2.denominator;
     return fraction(newNumerator, newDenomenator);
 }
 
@@ -66,17 +79,53 @@ fraction operator - (fraction const &frac1, fraction const &frac2)
 //Function to multiply two fractions
 fraction operator * (fraction const &frac1, fraction const &frac2)
 {
-    int newNumerator = frac1.numerator * frac2.numerator;
-    int newDenomenator = frac1.denominator * frac2.denominator;
+    double newNumerator = frac1.numerator * frac2.numerator;
+    double newDenomenator = frac1.denominator * frac2.denominator;
     return fraction(newNumerator, newDenomenator);
 }
 
 //Function to divide two fractions
 fraction operator / (fraction const &frac1, fraction const &frac2)
 {
-    int newNumerator = frac1.numerator * frac2.denominator;
-    int newDenomenator = frac1.denominator * frac2.numerator;
+    double newNumerator = frac1.numerator * frac2.denominator;
+    double newDenomenator = frac1.denominator * frac2.numerator;
     return fraction(newNumerator, newDenomenator);
+}
+
+//Function to compare < in two fractions
+bool operator < (fraction const &frac1, fraction const &frac2)
+{
+    double n1 = frac1.numerator / frac1.denominator;
+    double n2 = frac2.numerator / frac2.denominator;
+    if(n1 < n2) return 1;
+    else return 0;
+}
+
+//Function to compare > in two fractions
+bool operator > (fraction const &frac1, fraction const &frac2)
+{
+    double n1 = frac1.numerator / frac1.denominator;
+    double n2 = frac2.numerator / frac2.denominator;
+    if(n1 > n2) return 1;
+    else return 0;
+}
+
+//Function to compare == in two fractions
+bool operator == (fraction const &frac1, fraction const &frac2)
+{
+    fraction n1 = fraction(frac1.numerator, frac1.denominator);
+    fraction n2 = fraction(frac2.numerator, frac2.denominator);
+    if(n1.numerator == n2.numerator && n1.denominator == n2.denominator) return 1;
+    else return 0;
+}
+
+//Function to compare != in two fractions
+bool operator != (fraction const &frac1, fraction const &frac2)
+{
+    fraction n1 = fraction(frac1.numerator, frac1.denominator);
+    fraction n2 = fraction(frac2.numerator, frac2.denominator);
+    if(n1.numerator != n2.numerator || n1.denominator != n2.denominator) return 1;
+    else return 0;
 }
 
 #endif
