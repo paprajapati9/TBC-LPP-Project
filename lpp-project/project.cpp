@@ -39,8 +39,12 @@ public:
      */
     void checkBasic(vector<vector<double>> constraint, vector<double> objective, vector<double> resource)
     {
-        int BasicInt{}, flag{ 1 };
-
+        int BasicInt{}, flag{1};
+        cout<<left<<setw(10)<<"Basic";
+        for(int i = 1; i <= 4; i++) cout<<"x"<<setw(10)<<i;
+        cout<<"Solution\n";
+        //Printing Column Labels of initial table
+        cout<<left<<setw(10)<<setfill(separator)<<"Z";
         displayVector(objective, optimalSolution); // display new objective row element
 
         // i will denote the column of the table
@@ -86,16 +90,13 @@ public:
         int enteringVarIndex = 0;
         for (int i = 0; i < objRow.size(); i++)
         {
-            if (problemType)
-            {
                 if (objRow[i] < objRow[enteringVarIndex])
                     enteringVarIndex = i;
-            }
-            else
-            {
-                if (objRow[i] > objRow[enteringVarIndex])
-                    enteringVarIndex = i;
-            }
+            // else
+            // {
+            //     if (objRow[i] > objRow[enteringVarIndex])
+            //         enteringVarIndex = i;
+            // }
         }
         enteringVariable = enteringVarIndex;
         cout << "Entering variable is: x" << enteringVariable + 1 << endl;
@@ -228,6 +229,7 @@ public:
         //Calculate Z row cofficient of resource vector
         multFactor = objective[enteringVariable] * (-1);
         optimalSolution = optimalSolution + multFactor * reso[leavingVariable];
+        temp = (-1)*optimalSolution;
         //displayVector(reso); // display new resource vector
         multFactor = objective[enteringVariable] * (-1);
         cout<<left<<setw(10)<<"Basic";
