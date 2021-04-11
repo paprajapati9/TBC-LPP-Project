@@ -13,7 +13,7 @@ using namespace std;
 
 void displayVector(vector<int>);
 void displayVector(vector<double>, double);
-
+void displayinitialtable(vector<double>,double,vector<vector<double>>,vector<double>,vector <int>);
 const char separator = ' ';
 const int numWidth = 10;
 
@@ -40,13 +40,6 @@ public:
     void checkBasic(vector<vector<double>> constraint, vector<double> objective, vector<double> resource)
     {
         int BasicInt{}, flag{1};
-        cout<<left<<setw(10)<<"Basic";
-        for(int i = 1; i <= 4; i++) cout<<"x"<<setw(10)<<i;
-        cout<<"Solution\n";
-        //Printing Column Labels of initial table
-        cout<<left<<setw(10)<<setfill(separator)<<"Z";
-        displayVector(objective, optimalSolution); // display new objective row element
-
         // i will denote the column of the table
         for (int i = 0; i < constraint[0].size(); i++)
         {
@@ -63,10 +56,21 @@ public:
                 indexOfBasic.push_back(i);
 
         }
-        for (int j = 0; j < constraint.size(); j++)
+        displayinitialtable(objective,optimalSolution,constraint,resource,indexOfBasic);
+    }
+
+    void displayinitialtable(vector<double> object ,double sol,vector<vector<double>> constr,vector<double> resi, vector <int> basics)
+    {
+        cout<<left<<setw(10)<<"Basic";
+        for(int i = 1; i <= 4; i++) cout<<"x"<<setw(10)<<i;
+        cout<<"Solution\n";
+        cout<<left<<setw(10)<<setfill(separator)<<"Z";
+        displayVector(object, sol); // display new objective row element
+
+         for (int j = 0; j < constr.size(); j++)
         {
-            cout<<"x"<<left<<setw(9)<<indexOfBasic[j]+1; // Displaying Basic Variable Column Values
-            displayVector(constraint[j], resource[j]);
+            cout<<"x"<<left<<setw(9)<<basics[j]+1;
+            displayVector(constr[j], resi[j]);
         }
     }
 
