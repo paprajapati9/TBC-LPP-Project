@@ -61,6 +61,7 @@ public:
         }
         for (int j = 0; j < constraint.size(); j++)
         {
+            cout<<"x"<<left<<setw(9)<<indexOfBasic[j]+1; // Displaying Basic Variable Column Values
             displayVector(constraint[j], resource[j]);
         }
     }
@@ -80,19 +81,25 @@ public:
      * @param objRow: Objective row vector.
      * By default problem type is 1 that is maximizarion problem.
      */
-    void checkEnteringVar(vector<double> objRow, int problemType = 1)
+    int checkEnteringVar(vector<double> objRow, int problemType=1)
     {
         int enteringVarIndex = 0;
         for (int i = 0; i < objRow.size(); i++)
         {
-            
+            if (problemType)
+            {
                 if (objRow[i] < objRow[enteringVarIndex])
                     enteringVarIndex = i;
-            
-            
+            }
+            else
+            {
+                if (objRow[i] > objRow[enteringVarIndex])
+                    enteringVarIndex = i;
+            }
         }
         enteringVariable = enteringVarIndex;
         cout << "Entering variable is: x" << enteringVariable + 1 << endl;
+        return enteringVariable;
     }
 
 
@@ -111,17 +118,17 @@ public:
      * ratio and the corresponding value of "i" is given to leaving variable and then
      * we print the leaving variable
      */
-    void checkleavingVariable(vector<double> res, vector<vector<double>> constraint)
+    int checkleavingVariable(vector<double> reso, vector<vector<double>> constraint)
     {
         double min_ratio = 0;
         double ratio;
         double currentVar;
-        for (int i = 0; i < res.size(); i++)
+        for (int i = 0; i < reso.size(); i++)
         {
             currentVar = constraint[i][enteringVariable];
             if (currentVar > 0)
             {
-                ratio = res[i] / currentVar;
+                ratio = reso[i] / currentVar;
                 if (min_ratio == 0 || ratio < min_ratio)
                 {
                     min_ratio = ratio;
@@ -130,7 +137,9 @@ public:
             }
         }
         cout << "Leaving variable is: x" << indexOfBasic[leavingVariable] + 1 << endl; //printing leaving variable.
+        int returnLeave = indexOfBasic[leavingVariable];
         indexOfBasic[leavingVariable] = enteringVariable;
+        return returnLeave;
     }
 
 
@@ -202,7 +211,7 @@ public:
     * @param reso : old resource vector
     * @param objective : objective vector
     */
-    void newRow(vector<vector<double>>& constraints, vector<double>& objective, vector<double>& reso)
+    void newRow(vector<vector<double>> &constraints, vector<double> &objective, vector<double> &reso)
     {
         double multFactor = 1; //used as a new pivot row coefficient
 
@@ -219,12 +228,12 @@ public:
         //Calculate Z row cofficient of resource vector
         multFactor = objective[enteringVariable] * (-1);
         optimalSolution = optimalSolution + multFactor * reso[leavingVariable];
-        temp=(optimalSolution)*(-1); //Storing it's negative value into a temporary variable for Min problem
-
         //displayVector(reso); // display new resource vector
-
         multFactor = objective[enteringVariable] * (-1);
-
+        cout<<left<<setw(10)<<"Basic";
+        for(int i = 1; i <= 4; i++) cout<<left<<setw(10)<<"x"+to_string(i)<<" ";
+        cout<<"Solution\n";
+        cout<<left<<setw(10)<<setfill(separator)<<"Z";
         for (int j = 0; j < objective.size(); j++) // Calculate new objective row elements
         {
             objective[j] = objective[j] + multFactor * constraints[leavingVariable][j]; // formula applied and calculate new objective row
@@ -233,11 +242,12 @@ public:
         displayVector(objective, optimalSolution); // display new objective row element
 
         multFactor = 1;
-
         for (int j = 0; j < constraints.size(); j++) // Calcute new Constraint element
         {
             if (j == leavingVariable) // skip leaving row elements i.e already change in new pivot row function
-            {
+            {   
+                cout<<"x"<<left<<setw(9)<<indexOfBasic[leavingVariable]+1;
+                // Displaying Basic Variable Value
                 displayVector(constraints[leavingVariable], reso[leavingVariable]);
                 continue;
             }
@@ -248,7 +258,8 @@ public:
             {
                 constraints[j][i] = constraints[j][i] + multFactor * constraints[leavingVariable][i]; // formula applied and calculate new constraint row
             }
-
+            cout<<"x"<<left<<setw(9)<<indexOfBasic[enteringVariable]+1;
+            // Displaying Basic Variable Value
             displayVector(constraints[j], reso[j]); // display new constraint vector
         }
     }
@@ -468,16 +479,16 @@ int main()
     //Check initial basic variables
     c.checkBasic(c.constraints, o.objective, r.reso);
 
-    int a = c.checkOptimality(o.objective);
-
-    while (!a)
+    // int a = c.checkOptimality(o.objective);
+    int optimalCondition = c.checkOptimality(o.objective);
+    while (not optimalCondition)
     {
         c.checkEnteringVar(o.objective);
         c.checkleavingVariable(r.reso, c.constraints);
         c.setPivot(c.constraints);
         c.newPivotRow(c.constraints, r.reso);
         c.newRow(c.constraints, o.objective, r.reso);
-        a = c.checkOptimality(o.objective);
+        optimalCondition = c.checkOptimality(o.objective);
         cout << endl;
     }
     
