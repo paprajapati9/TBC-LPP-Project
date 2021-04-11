@@ -1,4 +1,4 @@
 .vscode/
 .vs/
-.lpp-project/projectCopy.exe
-.lpp-project/project.exe
+/project.exe
+/projectCopy.exe
