@@ -22,20 +22,20 @@ using namespace std;
 
 
 void displayVector(vector<int>);
-void displayVector(vector<double>, double);
-void displayinitialtable(vector<double>, double, vector<vector<double>>, vector<double>, vector<int>);
+void displayVector(vector<long double>, long double);
+void displayinitialtable(vector<long double>, long double, vector<vector<long double>>, vector<long double>, vector<int>);
 const char separator = ' ';
 const int numWidth = 10;
 
 class LPP
 {
 public:
-    double optimalSolution{}; //stores optimal solution at each simplex table
-    double temp;              //stores the optimal solution of Max problem for later conversion to Min .
+    long double optimalSolution{}; //stores optimal solution at each simplex table
+    long double temp;              //stores the optimal solution of Max problem for later conversion to Min .
     int enteringVariable{};   //stores index of the entering variable in indexOfBasic vector
     int leavingVariable{};    //stores index of the entering variable in objective vector
     int problemType;          //stores index of the entering variable in objective vector
-    double pivotElement;      //stores value of the pivot element at each simplex table
+    long double pivotElement;      //stores value of the pivot element at each simplex table
     vector<int> indexOfBasic; //stores index of current basic variables in objective vector
 
     void setProblemType(int probType)
@@ -48,7 +48,7 @@ public:
      * and adds thier variable in indexOfBaisc vector.
      * @param constraint: 2D constraints vector.
      */
-    void checkBasic(vector<vector<double>> constraint, vector<double> objective, vector<double> resource)
+    void checkBasic(vector<vector<long double>> constraint, vector<long double> objective, vector<long double> resource)
     {
         int BasicInt{}, flag{1};
         // i will denote the column of the table
@@ -69,7 +69,7 @@ public:
         displayinitialtable(objective, optimalSolution, constraint, resource, indexOfBasic);
     }
 
-    void displayinitialtable(vector<double> object, double sol, vector<vector<double>> constr, vector<double> resi, vector<int> basics)
+    void displayinitialtable(vector<long double> object, long double sol, vector<vector<long double>> constr, vector<long double> resi, vector<int> basics)
     {
         cout << left << setw(10) << "Basic";
         for (int i = 1; i <= 4; i++)
@@ -85,7 +85,7 @@ public:
         }
     }
 
-    void displayBasicVariables(vector<double> resource)
+    void displayBasicVariables(vector<long double> resource)
     {
 
         for (int i = 0; i < indexOfBasic.size(); i++)
@@ -100,7 +100,7 @@ public:
      * @param objRow: Objective row vector.
      * By default problem type is 1 that is maximizarion problem.
      */
-    int checkEnteringVar(vector<double> objRow, int problemType = 1)
+    int checkEnteringVar(vector<long double> objRow, int problemType = 1)
     {
         int enteringVarIndex = 0;
         for (int i = 0; i < objRow.size(); i++)
@@ -133,11 +133,11 @@ public:
      * ratio and the corresponding value of "i" is given to leaving variable and then
      * we print the leaving variable
      */
-    int checkleavingVariable(vector<double> reso, vector<vector<double>> constraint)
+    int checkleavingVariable(vector<long double> reso, vector<vector<long double>> constraint)
     {
-        double min_ratio = 0;
-        double ratio;
-        double currentVar;
+        long double min_ratio = 0;
+        long double ratio;
+        long double currentVar;
         for (int i = 0; i < reso.size(); i++)
         {
             currentVar = constraint[i][enteringVariable];
@@ -162,7 +162,7 @@ public:
      * based on entering and leaving variable indexes
      * @param constraints: 2D vector of all constraints
      */
-    void setPivot(vector<vector<double>> constraints)
+    void setPivot(vector<vector<long double>> constraints)
     {
         pivotElement = constraints[leavingVariable][enteringVariable];
         cout << "Pivot element is: " << pivotElement << endl
@@ -179,7 +179,7 @@ public:
      *
      * @return bool: 0 for not optimal and 1 for optimal
      */
-    bool checkOptimality(vector<double> objective)
+    bool checkOptimality(vector<long double> objective)
     {
         cout << "\nChecking Optimality...\n";
 
@@ -203,7 +203,7 @@ public:
     * initially it convert the resource element of old pivot row by dividing it by pivotElement
     * and then convert every element of constraint of old pivot row in a for loop by dividing by pivotElement
     */
-    void newPivotRow(vector<vector<double>> &constraints, vector<double> &reso)
+    void newPivotRow(vector<vector<long double>> &constraints, vector<long double> &reso)
     {
         reso[leavingVariable] = reso[leavingVariable] / pivotElement;
         for (int i = 0; i <= constraints[leavingVariable].size(); i++)
@@ -221,9 +221,9 @@ public:
     * @param reso : old resource vector
     * @param objective : objective vector
     */
-    void newRow(vector<vector<double>> &constraints, vector<double> &objective, vector<double> &reso)
+    void newRow(vector<vector<long double>> &constraints, vector<long double> &objective, vector<long double> &reso)
     {
-        double multFactor = 1; //used as a new pivot row coefficient
+        long double multFactor = 1; //used as a new pivot row coefficient
 
         for (int j = 0; j < reso.size(); j++)
         {
@@ -280,7 +280,7 @@ public:
 class Constraint : public LPP
 {
 public:
-    vector<vector<double>> constraints{{4, 4}, {1, 3}};
+    vector<vector<long double>> constraints{{20, 50}, {80, 50}};
 
     /**
      * @condition: -1 : <=
@@ -293,7 +293,7 @@ public:
      * Example: 2x1 + 3x2 = 4
      * @param res : resource vector
      */
-    void display(vector<double> res)
+    void display(vector<long double> res)
     {
         for (int i = 0; i < constraints.size(); ++i)
         {
@@ -313,7 +313,7 @@ public:
      * type of constraint. This basically converts the constraint
      * into standard form.
      */
-    void SlackSurp(vector<double> &objective, int problemType = 1)
+    void SlackSurp(vector<long double> &objective, int problemType = 1)
     {
         for (int i = 0; i < constraints.size(); ++i)
         {
@@ -364,19 +364,19 @@ public:
 class Resource : public LPP
 {
 public:
-    vector<double> reso{6, 2}; //stores resource coefficient
+    vector<long double> reso{48, 72}; //stores resource coefficient
 };
 
 class ObjFunc : public LPP
 {
 public:
-    vector<double> objective; //stores objective coefficient.
+    vector<long double> objective; //stores objective coefficient.
 
     //Insert coefficient of objective function to objective vector.
     void Insert()
     {
-        objective.push_back(-1);
-        objective.push_back(-5);
+        objective.push_back(-8);
+        objective.push_back(-7);
     }
 
     /**
@@ -448,7 +448,8 @@ public:
     }
 };
 
-void bigM_zrow(vector<double> &objective, vector<vector<double>> constraints, vector<int> constype, vector<double> &reso, double &optimalSolution)
+
+void bigM_zrow(vector<long double> &objective, vector<vector<long double>> constraints, vector<int> constype, vector<long double> &reso, long double &optimalSolution)
 {
     // New z row = old z row + (1000*R1 row + 1000*R2 row)
 
@@ -484,8 +485,8 @@ void displayVector(vector<int> dv)
     cout << endl;
 }
 
-// Overloaded displayVector to display a vector containing double type data
-void displayVector(vector<double> dv, double resourse)
+// Overloaded displayVector to display a vector containing long double type data
+void displayVector(vector<long double> dv, long double resourse)
 {
     for (int i = 0; i < dv.size(); i++)
     {
