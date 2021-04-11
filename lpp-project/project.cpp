@@ -14,6 +14,7 @@ using namespace std;
 void displayVector(vector<int>);
 void displayVector(vector<double>, double);
 void displayinitialtable(vector<double>,double,vector<vector<double>>,vector<double>,vector <int>);
+void displayTable(vector<double>,double,vector<vector<double>>,vector<double>,vector <int>, int, int);
 const char separator = ' ';
 const int numWidth = 10;
 
@@ -234,12 +235,8 @@ public:
         multFactor = objective[enteringVariable] * (-1);
         optimalSolution = optimalSolution + multFactor * reso[leavingVariable];
         temp = (-1)*optimalSolution;
-        //displayVector(reso); // display new resource vector
         multFactor = objective[enteringVariable] * (-1);
-        cout<<left<<setw(10)<<"Basic";
-        for(int i = 1; i <= 4; i++) cout<<left<<setw(10)<<"x"+to_string(i)<<" ";
-        cout<<"Solution\n";
-        cout<<left<<setw(10)<<setfill(separator)<<"Z";
+
         for (int j = 0; j < objective.size(); j++) // Calculate new objective row elements
         {
             objective[j] = objective[j] + multFactor * constraints[leavingVariable][j]; // formula applied and calculate new objective row
@@ -250,13 +247,8 @@ public:
         multFactor = 1;
         for (int j = 0; j < constraints.size(); j++) // Calcute new Constraint element
         {
-            if (j == leavingVariable) // skip leaving row elements i.e already change in new pivot row function
-            {   
-                cout<<"x"<<left<<setw(9)<<indexOfBasic[leavingVariable]+1;
-                // Displaying Basic Variable Value
-                displayVector(constraints[leavingVariable], reso[leavingVariable]);
-                continue;
-            }
+            if (j == leavingVariable) continue;
+            // skip leaving row elements i.e already change in new pivot row function   
 
             multFactor = constraints[j][enteringVariable] * (-1);
 
@@ -264,10 +256,8 @@ public:
             {
                 constraints[j][i] = constraints[j][i] + multFactor * constraints[leavingVariable][i]; // formula applied and calculate new constraint row
             }
-            cout<<"x"<<left<<setw(9)<<indexOfBasic[enteringVariable]+1;
-            // Displaying Basic Variable Value
-            displayVector(constraints[j], reso[j]); // display new constraint vector
         }
+        displayTable(objective,optimalSolution,constraints,reso,indexOfBasic,enteringVariable,leavingVariable);
     }
 };
 
@@ -463,6 +453,28 @@ void displayVector(vector<double> dv, double resourse)
     cout << left << fixed << setprecision(2) << setw(numWidth) << setfill(separator) << resourse << " ";
     cout << endl;
 }
+
+void displayTable(vector<double> object ,double sol,vector<vector<double>> constr,vector<double> resi, vector <int> basics, int enteringVariable, int leavingVariable)
+    {
+    cout<<left<<setw(10)<<"Basic";
+    for(int i = 1; i <= 4; i++) cout<<left<<setw(10)<<"x"+to_string(i)<<" ";
+    cout<<"Solution\n";
+    cout<<left<<setw(10)<<setfill(separator)<<"Z";
+    displayVector(object, sol); // display new objective row element
+    for (int j = 0; j < constr.size(); j++) // Calcute new Constraint element
+    {
+        if (j == leavingVariable) // skip leaving row elements i.e already change in new pivot row function
+        {   
+            cout<<"x"<<left<<setw(9)<<basics[leavingVariable]+1;
+            // Displaying Basic Variable Value
+            displayVector(constr[leavingVariable], resi[leavingVariable]);
+            continue;
+        }
+        cout<<"x"<<left<<setw(9)<<basics[enteringVariable]+1;
+        // Displaying Basic Variable Value
+        displayVector(constr[j], resi[j]); // display new constraint vector
+    }
+    }       
 
 int main()
 {
