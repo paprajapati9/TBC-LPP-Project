@@ -2,13 +2,14 @@
 #define __fraction_H_INCLUDED__
 
 #include <iostream>
+#include <string>
 
 /**
  * Fraction data type class
  */
 class fraction
 {
-  public:
+    public:
     double numerator;
     double denominator;
 
@@ -37,6 +38,17 @@ class fraction
       
         numerator = numerator / d;
         denominator = denominator / d;
+    }
+
+    std::string toString()
+    {
+        if (not numerator) return std::to_string(0);
+        else if (denominator == 1) return std::to_string((int)numerator);
+        else
+        {
+            std::string temp = std::to_string((int)numerator) + "/" + std::to_string((int)denominator);
+            return temp;
+        }
     }
 
     friend std::ostream& operator<< (std::ostream &out, const fraction &frac);

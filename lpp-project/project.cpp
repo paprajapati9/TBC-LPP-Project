@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <iomanip>
+#include "fraction.h"
 using namespace std;
 
 /**
@@ -22,21 +23,21 @@ using namespace std;
 
 
 void displayVector(vector<int>);
-void displayVector(vector<double>, double);
-void displayinitialtable(vector<double>,double,vector<vector<double>>,vector<double>,vector <int>);
-void displayTable(vector<double>,double,vector<vector<double>>,vector<double>,vector <int>, int, int);
+void displayVector(vector<fraction>, fraction);
+void displayinitialtable(vector<fraction>,fraction,vector<vector<fraction>>,vector<fraction>,vector <int>);
+void displayTable(vector<fraction>,fraction,vector<vector<fraction>>,vector<fraction>,vector <int>, int, int);
 const char separator = ' ';
 const int numWidth = 10;
 
 class LPP
 {
 public:
-    double optimalSolution{}; //stores optimal solution at each simplex table
-    double temp;              //stores the optimal solution of Max problem for later conversion to Min .
+    fraction optimalSolution{}; //stores optimal solution at each simplex table
+    fraction temp;              //stores the optimal solution of Max problem for later conversion to Min .
     int enteringVariable{};   //stores index of the entering variable in indexOfBasic vector
     int leavingVariable{};    //stores index of the entering variable in objective vector
     int problemType;          //stores index of the entering variable in objective vector
-    double pivotElement;      //stores value of the pivot element at each simplex table
+    fraction pivotElement;      //stores value of the pivot element at each simplex table
     vector<int> indexOfBasic; //stores index of current basic variables in objective vector
 
     void setProblemType(int probType)
@@ -49,9 +50,10 @@ public:
      * and adds thier variable in indexOfBaisc vector.
      * @param constraint: 2D constraints vector.
      */
-    void checkBasic(vector<vector<double>> constraint, vector<double> objective, vector<double> resource)
+    void checkBasic(vector<vector<fraction>> constraint, vector<fraction> objective, vector<fraction> resource)
     {
-        int BasicInt{}, flag{1};
+        fraction BasicInt{};
+        int flag{1};
         // i will denote the column of the table
         for (int i = 0; i < constraint[0].size(); i++)
         {
@@ -62,7 +64,7 @@ public:
             {
                 if (constraint[j][i] < 0)
                     flag = 0;
-                BasicInt += constraint[j][i];
+                BasicInt = BasicInt + constraint[j][i];
             }
             if (flag && (BasicInt == 1))
                 indexOfBasic.push_back(i);
@@ -70,23 +72,7 @@ public:
         displayinitialtable(objective, optimalSolution, constraint, resource, indexOfBasic);
     }
 
-    void displayinitialtable(vector<double> object, double sol, vector<vector<double>> constr, vector<double> resi, vector<int> basics)
-    {
-        cout << left << setw(10) << "Basic";
-        for (int i = 1; i <= 4; i++)
-            cout << "x" << setw(10) << i;
-        cout << "Solution\n";
-        cout << left << setw(10) << setfill(separator) << "Z";
-        displayVector(object, sol); // display new objective row element
-
-        for (int j = 0; j < constr.size(); j++)
-        {
-            cout << "x" << left << setw(9) << basics[j] + 1;
-            displayVector(constr[j], resi[j]);
-        }
-    }
-
-    void displayBasicVariables(vector<double> resource)
+    void displayBasicVariables(vector<fraction> resource)
     {
 
         for (int i = 0; i < indexOfBasic.size(); i++)
@@ -101,7 +87,7 @@ public:
      * @param objRow: Objective row vector.
      * By default problem type is 1 that is maximizarion problem.
      */
-    int checkEnteringVar(vector<double> objRow, int problemType = 1)
+    int checkEnteringVar(vector<fraction> objRow, int problemType = 1)
     {
         int enteringVarIndex = 0;
         for (int i = 0; i < objRow.size(); i++)
@@ -134,11 +120,11 @@ public:
      * ratio and the corresponding value of "i" is given to leaving variable and then
      * we print the leaving variable
      */
-    int checkleavingVariable(vector<double> reso, vector<vector<double>> constraint)
+    int checkleavingVariable(vector<fraction> reso, vector<vector<fraction>> constraint)
     {
-        double min_ratio = 0;
-        double ratio;
-        double currentVar;
+        fraction min_ratio = 0;
+        fraction ratio;
+        fraction currentVar;
         for (int i = 0; i < reso.size(); i++)
         {
             currentVar = constraint[i][enteringVariable];
@@ -163,7 +149,7 @@ public:
      * based on entering and leaving variable indexes
      * @param constraints: 2D vector of all constraints
      */
-    void setPivot(vector<vector<double>> constraints)
+    void setPivot(vector<vector<fraction>> constraints)
     {
         pivotElement = constraints[leavingVariable][enteringVariable];
         cout << "Pivot element is: " << pivotElement << endl<<endl;
@@ -179,7 +165,7 @@ public:
      *
      * @return bool: 0 for not optimal and 1 for optimal
      */
-    bool checkOptimality(vector<double> objective)
+    bool checkOptimality(vector<fraction> objective)
     {
         cout << "\nChecking Optimality...\n";
 
@@ -203,7 +189,7 @@ public:
     * initially it convert the resource element of old pivot row by dividing it by pivotElement
     * and then convert every element of constraint of old pivot row in a for loop by dividing by pivotElement
     */
-    void newPivotRow(vector<vector<double>> &constraints, vector<double> &reso)
+    void newPivotRow(vector<vector<fraction>> &constraints, vector<fraction> &reso)
     {
         reso[leavingVariable] = reso[leavingVariable] / pivotElement;
         for (int i = 0; i < constraints[leavingVariable].size(); i++)
@@ -221,9 +207,9 @@ public:
     * @param reso : old resource vector
     * @param objective : objective vector
     */
-    void newRow(vector<vector<double>> &constraints, vector<double> &objective, vector<double> &reso)
+    void newRow(vector<vector<fraction>> &constraints, vector<fraction> &objective, vector<fraction> &reso)
     {
-        double multFactor = 1; //used as a new pivot row coefficient
+        fraction multFactor = 1; //used as a new pivot row coefficient
 
         for (int j = 0; j < reso.size(); j++)
         {
@@ -268,7 +254,7 @@ public:
 class Constraint : public LPP
 {
 public:
-    vector<vector<double>> constraints{{1, 2}, {2, 1}};
+    vector<vector<fraction>> constraints{{1, 2}, {2, 1}};
 
     /**
      * @condition: -1 : <=
@@ -281,7 +267,7 @@ public:
      * Example: 2x1 + 3x2 = 4
      * @param res : resource vector
      */
-    void display(vector<double> res)
+    void display(vector<fraction> res)
     {
         for (int i = 0; i < constraints.size(); ++i)
         {
@@ -301,7 +287,7 @@ public:
      * type of constraint. This basically converts the constraint
      * into standard form.
      */
-    void SlackSurp(vector<double> &objective, int problemType = 1)
+    void SlackSurp(vector<fraction> &objective, int problemType = 1)
     {
         for (int i = 0; i < constraints.size(); ++i)
         {
@@ -352,13 +338,13 @@ public:
 class Resource : public LPP
 {
 public:
-    vector<double> reso{2, 3}; //stores resource coefficient
+    vector<fraction> reso{2, 3}; //stores resource coefficient
 };
 
 class ObjFunc : public LPP
 {
 public:
-    vector<double> objective; //stores objective coefficient.
+    vector<fraction> objective; //stores objective coefficient.
 
     //Insert coefficient of objective function to objective vector.
     void Insert()
@@ -378,7 +364,7 @@ public:
      */
     void display()
     {
-        int coeff;
+        fraction coeff;
         cout << "* LPP Problem *\n\n";
         if (problemType == 1)
         {
@@ -436,7 +422,7 @@ public:
     }
 };
 
-void bigM_zrow(vector<double> &objective, vector<vector<double>> constraints, vector<int> constype, vector<double> &reso, double &optimalSolution)
+void bigM_zrow(vector<fraction> &objective, vector<vector<fraction>> constraints, vector<int> constype, vector<fraction> &reso, fraction &optimalSolution)
 {
     // New z row = old z row + (1000*R1 row + 1000*R2 row)
 
@@ -467,23 +453,40 @@ void displayVector(vector<int> dv)
 {
     for (int i = 0; i < dv.size(); i++)
     {
-        cout << left << setw(numWidth) << setfill(separator) << dv[i] << " ";
+        cout << left << dv[i] << " ";
     }
     cout << endl;
 }
 
-// Overloaded displayVector to display a vector containing double type data
-void displayVector(vector<double> dv, double resourse)
+// Overloaded displayVector to display a vector containing fraction type data
+void displayVector(vector<fraction> dv, fraction resourse)
 {
     for (int i = 0; i < dv.size(); i++)
-    {
-        cout << left << fixed << setprecision(2) << setw(numWidth) << setfill(separator) << dv[i] << " ";
+    {   
+        cout<<setw(10)<<setfill(separator)<<dv[i].toString();
     }
-    cout << left << fixed << setprecision(2) << setw(numWidth) << setfill(separator) << resourse << " ";
+    cout<<setw(10)<<setfill(separator)<<resourse.toString();
     cout << endl;
 }
 
-void displayTable(vector<double> object ,double sol,vector<vector<double>> constr,vector<double> resi, vector <int> basics, int enteringVariable, int leavingVariable)
+
+void displayinitialtable(vector<fraction> object, fraction sol, vector<vector<fraction>> constr, vector<fraction> resi, vector<int> basics)
+    {
+        cout << left << setw(10) << "Basic";
+        for (int i = 1; i <= 4; i++)
+            cout << "x" << setw(9) << i;
+        cout << "Solution\n";
+        cout << left << setw(10) << setfill(separator) << "Z";
+        displayVector(object, sol); // display new objective row element
+
+        for (int j = 0; j < constr.size(); j++)
+        {
+            cout << "x" << left << setw(10) << basics[j] + 1;
+            displayVector(constr[j], resi[j]);
+        }
+    }
+
+void displayTable(vector<fraction> object ,fraction sol,vector<vector<fraction>> constr,vector<fraction> resi, vector <int> basics, int enteringVariable, int leavingVariable)
     {
         cout<<left<<setw(10)<<"Basic";
         for(int i = 1; i <= 4; i++) cout<<left<<setw(10)<<"x"+to_string(i)<<" ";
