@@ -27,7 +27,7 @@ void displayVector(vector<fraction>, fraction);
 void displayinitialtable(vector<fraction>,fraction,vector<vector<fraction>>,vector<fraction>,vector <int>);
 void displayTable(vector<fraction>,fraction,vector<vector<fraction>>,vector<fraction>,vector <int>, int, int);
 const char separator = ' ';
-const int numWidth = 10;
+const int numWidth = 12;
 
 class LPP
 {
@@ -254,14 +254,14 @@ public:
 class Constraint : public LPP
 {
 public:
-    vector<vector<fraction>> constraints{{1, 2}, {2, 1}};
+    vector<vector<fraction>> constraints{{20 ,50}, {80, 50}};
 
     /**
      * @condition: -1 : <=
      *              0 : =
      *              1 : >=
      */
-    vector<int> constype{-1, -1}; //type of constraints ,have to determine constraint type from the user input
+    vector<int> constype{-1,1}; //type of constraints ,have to determine constraint type from the user input
     /**
      * What does function do: Displays the constraints in equation form.
      * Example: 2x1 + 3x2 = 4
@@ -338,7 +338,7 @@ public:
 class Resource : public LPP
 {
 public:
-    vector<fraction> reso{2, 3}; //stores resource coefficient
+    vector<fraction> reso{48, 72}; //stores resource coefficient
 };
 
 class ObjFunc : public LPP
@@ -349,8 +349,8 @@ public:
     //Insert coefficient of objective function to objective vector.
     void Insert()
     {
-        objective.push_back(-2);
-        objective.push_back(-3);
+        objective.push_back(-8);
+        objective.push_back(-7);
     }
 
     /**
@@ -463,46 +463,46 @@ void displayVector(vector<fraction> dv, fraction resourse)
 {
     for (int i = 0; i < dv.size(); i++)
     {   
-        cout<<setw(10)<<setfill(separator)<<dv[i];
+        cout<<setw(numWidth)<<setfill(separator)<<dv[i];
     }
-    cout<<setw(10)<<setfill(separator)<<resourse;
+    cout<<setw(numWidth)<<setfill(separator)<<resourse;
     cout << endl;
 }
 
 
 void displayinitialtable(vector<fraction> object, fraction sol, vector<vector<fraction>> constr, vector<fraction> resi, vector<int> basics)
     {
-        cout << left << setw(10) << "Basic";
-        for (int i = 1; i <= 4; i++)
-            cout << "x" << setw(9)<< i;
+        cout << left << setw(numWidth) << "Basic";
+        for (int i = 1; i <= 5; i++)
+            cout <<"x"<<setw(numWidth-1)<< i;
         cout << "Solution\n";
-        cout << left << setw(10) << setfill(separator) << "Z";
+        cout<< setw(numWidth+1)<< "Z";
         displayVector(object, sol); // display new objective row element
 
         for (int j = 0; j < constr.size(); j++)
         {
-            cout <<"x"<< left << setw(10) <<setfill(separator)<< basics[j] + 1;
+            cout <<"x"<< left << setw(numWidth) <<setfill(separator)<< basics[j] + 1;
             displayVector(constr[j], resi[j]);
         }
     }
 
 void displayTable(vector<fraction> object ,fraction sol,vector<vector<fraction>> constr,vector<fraction> resi, vector <int> basics, int enteringVariable, int leavingVariable)
     {
-        cout<<left<<setw(10)<<"Basic";
-        for(int i = 1; i <= 4; i++) cout<<left<<setw(10)<<"x"+to_string(i);
+        cout<<left<<setw(numWidth-1)<<"Basic";
+        for(int i = 1; i <= 5; i++) cout<<left<<setw(numWidth)<<"x"+to_string(i);
         cout<<"Solution\n";
-        cout<<left<<setw(10)<<setfill(separator)<<"Z";
+        cout<<left<<setw(numWidth)<<setfill(separator)<<"Z";
         displayVector(object, sol); // display new objective row element
         for (int j = 0; j < constr.size(); j++) // Calcute new Constraint element
         {
             if (j == leavingVariable) // skip leaving row elements i.e already change in new pivot row function
             {   
-                cout<<"x"<<left<<setw(9)<<basics[leavingVariable]+1;
+                cout<<"x"<<left<<setw(numWidth-1)<<basics[leavingVariable]+1;
                 // Displaying Basic Variable Value
                 displayVector(constr[leavingVariable], resi[leavingVariable]);
                 continue;
             }
-            cout<<"x"<<left<<setw(9)<<basics[j]+1;
+            cout<<"x"<<left<<setw(numWidth-1)<<basics[j]+1;
             // Displaying Basic Variable Value
             displayVector(constr[j], resi[j]); // display new constraint vector
         }
