@@ -418,7 +418,7 @@ public:
             //Converting Minization problem to Maximization problem.
             cout << endl
                  << "Converting the Objective function into Maximization form" << endl;
-            cout << "Min (-Z) = ";
+            cout << "Max (-Z) = ";
             for (int j = 0; j < objective.size(); j++)
             {
                 coeff = (objective[j] != 0) ? (objective[j]) : 0;
@@ -499,11 +499,11 @@ void displayTable(vector<double> object ,double sol,vector<vector<double>> const
                 displayVector(constr[leavingVariable], resi[leavingVariable]);
                 continue;
             }
-            cout<<"x"<<left<<setw(9)<<enteringVariable+1;
+            cout<<"x"<<left<<setw(9)<<basics[j]+1;
             // Displaying Basic Variable Value
             displayVector(constr[j], resi[j]); // display new constraint vector
         }
-    }
+    }       
 
 int main()
 {
