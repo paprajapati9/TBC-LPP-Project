@@ -40,17 +40,6 @@ class fraction
         denominator = denominator / d;
     }
 
-    std::string toString()
-    {
-        if (not numerator) return std::to_string(0);
-        else if (denominator == 1) return std::to_string((int)numerator);
-        else
-        {
-            std::string temp = std::to_string((int)numerator) + "/" + std::to_string((int)denominator);
-            return temp;
-        }
-    }
-
     friend std::ostream& operator<< (std::ostream &out, const fraction &frac);
 
     friend fraction operator + (fraction const &, fraction const &);
@@ -73,7 +62,9 @@ std::ostream& operator<< (std::ostream &out, const fraction &frac)
     // Since operator<< is a friend of the fraction class, we can access fraction's members directly.
     if(frac.numerator == -0) out << 0;
     else if(frac.denominator > 1)
-        out << frac.numerator << "/" << frac.denominator ; // actual output done here
+        {
+            out<<(std::to_string((int)frac.numerator) + "/" + std::to_string((int)frac.denominator));
+        }
     else 
         out << frac.numerator;
 

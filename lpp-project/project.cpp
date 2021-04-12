@@ -453,7 +453,7 @@ void displayVector(vector<int> dv)
 {
     for (int i = 0; i < dv.size(); i++)
     {
-        cout << left << dv[i] << " ";
+        cout << left <<setw(10)<<setfill(separator)<<dv[i];
     }
     cout << endl;
 }
@@ -463,9 +463,9 @@ void displayVector(vector<fraction> dv, fraction resourse)
 {
     for (int i = 0; i < dv.size(); i++)
     {   
-        cout<<setw(10)<<setfill(separator)<<dv[i].toString();
+        cout<<setw(10)<<setfill(separator)<<dv[i];
     }
-    cout<<setw(10)<<setfill(separator)<<resourse.toString();
+    cout<<setw(10)<<setfill(separator)<<resourse;
     cout << endl;
 }
 
@@ -474,14 +474,14 @@ void displayinitialtable(vector<fraction> object, fraction sol, vector<vector<fr
     {
         cout << left << setw(10) << "Basic";
         for (int i = 1; i <= 4; i++)
-            cout << "x" << setw(9) << i;
+            cout << "x" << setw(9)<< i;
         cout << "Solution\n";
         cout << left << setw(10) << setfill(separator) << "Z";
         displayVector(object, sol); // display new objective row element
 
         for (int j = 0; j < constr.size(); j++)
         {
-            cout << "x" << left << setw(10) << basics[j] + 1;
+            cout <<"x"<< left << setw(10) <<setfill(separator)<< basics[j] + 1;
             displayVector(constr[j], resi[j]);
         }
     }
@@ -489,7 +489,7 @@ void displayinitialtable(vector<fraction> object, fraction sol, vector<vector<fr
 void displayTable(vector<fraction> object ,fraction sol,vector<vector<fraction>> constr,vector<fraction> resi, vector <int> basics, int enteringVariable, int leavingVariable)
     {
         cout<<left<<setw(10)<<"Basic";
-        for(int i = 1; i <= 4; i++) cout<<left<<setw(10)<<"x"+to_string(i)<<" ";
+        for(int i = 1; i <= 4; i++) cout<<left<<setw(10)<<"x"+to_string(i);
         cout<<"Solution\n";
         cout<<left<<setw(10)<<setfill(separator)<<"Z";
         displayVector(object, sol); // display new objective row element
