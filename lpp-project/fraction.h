@@ -2,7 +2,6 @@
 #define __fraction_H_INCLUDED__
 
 #include <iostream>
-#include <string>
 
 /**
  * Fraction data type class
